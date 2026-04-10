@@ -10,17 +10,18 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: #f5f5f5;
       color: #222;
+      line-height: 1.6;
     }
 
     .container {
-      max-width: 700px;
+      max-width: 760px;
       margin: 0 auto;
       padding: 24px 16px 60px;
     }
 
     h1 {
       text-align: center;
-      margin-top: 30px;
+      margin-top: 24px;
       margin-bottom: 8px;
       font-size: 34px;
     }
@@ -28,7 +29,8 @@
     .subtitle {
       text-align: center;
       color: #888;
-      margin-bottom: 30px;
+      margin-bottom: 28px;
+      font-size: 18px;
     }
 
     .notice {
@@ -37,51 +39,73 @@
       padding: 18px;
       margin-bottom: 28px;
       color: #444;
+      border-radius: 4px;
     }
 
     .question-box {
-      background: white;
-      padding: 24px;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      background: #fff;
+      padding: 22px;
+      border-radius: 14px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      margin-bottom: 18px;
     }
 
     .question-number {
       color: #888;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
+      font-size: 16px;
     }
 
     .question-title {
-      font-size: 28px;
-      line-height: 1.5;
-      margin-bottom: 24px;
+      font-size: 26px;
+      margin-bottom: 18px;
     }
 
-    .option {
+    .option-item {
       display: block;
-      width: 100%;
-      background: #fff;
       border: 1px solid #ddd;
       border-radius: 10px;
-      padding: 18px;
-      margin-bottom: 14px;
-      text-align: left;
-      font-size: 20px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      background: #fff;
       cursor: pointer;
       transition: 0.2s;
     }
 
-    .option:hover {
+    .option-item:hover {
       background: #f8f8f8;
       border-color: #999;
     }
 
+    .option-item input {
+      margin-right: 10px;
+      transform: scale(1.1);
+    }
+
+    .submit-wrap {
+      text-align: center;
+      margin-top: 28px;
+    }
+
+    .submit-btn,
+    .restart-btn {
+      padding: 14px 24px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      background: #222;
+      color: #fff;
+      cursor: pointer;
+    }
+
     .result-box {
-      background: white;
-      padding: 24px;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
       display: none;
+      background: #fff;
+      padding: 24px;
+      border-radius: 14px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      margin-top: 28px;
+      white-space: pre-line;
     }
 
     .result-title {
@@ -89,45 +113,42 @@
       margin-bottom: 16px;
     }
 
-    .restart-btn {
-      margin-top: 20px;
-      padding: 14px 20px;
-      font-size: 18px;
-      border: none;
-      border-radius: 10px;
-      background: #222;
-      color: white;
-      cursor: pointer;
+    .error {
+      color: #c62828;
+      text-align: center;
+      margin-top: 14px;
+      font-size: 16px;
     }
 
-    .progress {
-      text-align: center;
-      color: #777;
-      margin-bottom: 18px;
+    .footer-space {
+      height: 20px;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>SDTI人格测试 v1.0</h1>
-    <div class="subtitle">共 3 题 · 一份非常正经的问卷</div>
+    <div class="subtitle">共 5 题 · 一份非常正经的问卷</div>
 
     <div class="notice">
       答案无对错。维度已隐藏，反正不隐藏你也不会认真答。
     </div>
 
-    <div id="quizBox" class="question-box">
-      <div class="progress" id="progress"></div>
-      <div class="question-number" id="questionNumber"></div>
-      <div class="question-title" id="questionTitle"></div>
-      <div id="options"></div>
+    <div id="quizForm"></div>
+
+    <div class="submit-wrap">
+      <button class="submit-btn" onclick="submitQuiz()">提交测试</button>
+      <div id="errorText" class="error"></div>
     </div>
 
     <div id="resultBox" class="result-box">
       <div class="result-title">测试结果</div>
       <div id="resultText"></div>
-      <button class="restart-btn" onclick="restartQuiz()">重新测试</button>
+      <br />
+      <button class="restart-btn" onclick="resetQuiz()">重新填写</button>
     </div>
+
+    <div class="footer-space"></div>
   </div>
 
   <script>
@@ -155,44 +176,66 @@
           { text: 'B 神秘、有趣、有点反常', value: 'B' },
           { text: 'C 自由、松弛、别来管我', value: 'C' }
         ]
+      },
+      {
+        title: '当别人误解你时，你更可能：',
+        options: [
+          { text: 'A 解释清楚，尽量减少误会', value: 'A' },
+          { text: 'B 看心情，有时懒得解释', value: 'B' },
+          { text: 'C 表面无所谓，背地里记一会儿', value: 'C' }
+        ]
+      },
+      {
+        title: '理想中的生活节奏更像：',
+        options: [
+          { text: 'A 稳定推进，每一步都有安排', value: 'A' },
+          { text: 'B 有变化、有惊喜、不太无聊', value: 'B' },
+          { text: 'C 宽松自由，最好没人催我', value: 'C' }
+        ]
       }
     ];
 
-    let currentQuestion = 0;
-    let answers = [];
+    function renderQuestions() {
+      const quizForm = document.getElementById('quizForm');
+      quizForm.innerHTML = '';
 
-    function renderQuestion() {
-      const q = questions[currentQuestion];
-      document.getElementById('progress').innerText = `第 ${currentQuestion + 1} / ${questions.length} 题`;
-      document.getElementById('questionNumber').innerText = `第 ${currentQuestion + 1} 题 · 维度已隐藏`;
-      document.getElementById('questionTitle').innerText = q.title;
+      questions.forEach((question, index) => {
+        const questionBox = document.createElement('div');
+        questionBox.className = 'question-box';
 
-      const optionsBox = document.getElementById('options');
-      optionsBox.innerHTML = '';
+        let optionsHtml = '';
+        question.options.forEach((option) => {
+          optionsHtml += `
+            <label class="option-item">
+              <input type="radio" name="question-${index}" value="${option.value}">
+              ${option.text}
+            </label>
+          `;
+        });
 
-      q.options.forEach(option => {
-        const btn = document.createElement('button');
-        btn.className = 'option';
-        btn.innerText = option.text;
-        btn.onclick = () => selectAnswer(option.value);
-        optionsBox.appendChild(btn);
+        questionBox.innerHTML = `
+          <div class="question-number">第 ${index + 1} 题 · 维度已隐藏</div>
+          <div class="question-title">${question.title}</div>
+          <div>${optionsHtml}</div>
+        `;
+
+        quizForm.appendChild(questionBox);
       });
     }
 
-    function selectAnswer(value) {
-      answers.push(value);
-      currentQuestion++;
+    function submitQuiz() {
+      const answers = [];
+      const errorText = document.getElementById('errorText');
+      errorText.innerText = '';
 
-      if (currentQuestion < questions.length) {
-        renderQuestion();
-      } else {
-        showResult();
+      for (let i = 0; i < questions.length; i++) {
+        const checked = document.querySelector(`input[name="question-${i}"]:checked`);
+        if (!checked) {
+          errorText.innerText = `你还有第 ${i + 1} 题没选。`;
+          return;
+        }
+        answers.push(checked.value);
       }
-    }
-
-    function showResult() {
-      document.getElementById('quizBox').style.display = 'none';
-      document.getElementById('resultBox').style.display = 'block';
 
       const countA = answers.filter(x => x === 'A').length;
       const countB = answers.filter(x => x === 'B').length;
@@ -201,26 +244,33 @@
       let result = '';
 
       if (countA >= countB && countA >= countC) {
-        result = '你是【稳控型人格】。你偏向明确、独立、讲究效率，虽然表面平静，但心里其实很有主意。';
+        result = '你是【稳控型人格】。\n你偏向明确、独立、讲究效率，虽然表面平静，但心里其实很有主意。';
       } else if (countB >= countA && countB >= countC) {
-        result = '你是【游离型人格】。你不爱被硬套进框架，直觉强，节奏自由，讨厌被催。';
+        result = '你是【游离型人格】。\n你不爱被硬套进框架，直觉强，节奏自由，讨厌被催。';
       } else {
-        result = '你是【松弛型人格】。你有自己的活法，不一定争抢，但总能找到属于自己的位置。';
+        result = '你是【松弛型人格】。\n你有自己的活法，不一定争抢，但总能找到属于自己的位置。';
       }
 
+      document.getElementById('resultBox').style.display = 'block';
       document.getElementById('resultText').innerText =
         `你的答案：${answers.join(' / ')}\n\n${result}`;
+
+      document.getElementById('resultBox').scrollIntoView({ behavior: 'smooth' });
     }
 
-    function restartQuiz() {
-      currentQuestion = 0;
-      answers = [];
-      document.getElementById('quizBox').style.display = 'block';
+    function resetQuiz() {
+      const radios = document.querySelectorAll('input[type="radio"]');
+      radios.forEach(radio => {
+        radio.checked = false;
+      });
+
+      document.getElementById('errorText').innerText = '';
       document.getElementById('resultBox').style.display = 'none';
-      renderQuestion();
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    renderQuestion();
+    renderQuestions();
   </script>
 </body>
 </html>
