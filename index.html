@@ -152,256 +152,338 @@
   </div>
 
   <script>
-  const typeMap = {
-    hero: "侠肝义胆的",
-    detached: "超脱俗世的",
-    agreeable: "处处求情的",
-    naive: "天真烂漫的",
-    wise: "大智若愚的",
-    honest: "坦荡真诚的",
-    sensitive: "敏感脆弱的",
-    fakeSmart: "自作聪明的",
-    cynical: "愤世嫉俗的",
-    jealous: "心胸狭隘的"
-  };
+// ===== A模组（性格倾向）=====
+  const typeMapA = {
+    hero: "侠肝义胆的",   //愤青
+    detached: "超脱俗世的",  //出家
+    agreeable: "讨好人格的", //讨好
+    naive: "天真烂漫的",  //傻宝
+    Magnanimous: "大智若愚的",  //大气
+    honest: "坦荡真诚的",  //实在
+    social: "圆滑世故的",  //油滑
 
-  const typeDescriptions = {
+    sensitive: "敏感脆弱的",  //矫情
+    fakeSmart: "自作聪明的", //装逼
+    cynical: "愤世嫉俗的",  //酸性
+    selfish: "自私自利的",  //自私
+    coward: "懦弱退缩的",  //懦弱
+    jealous: "心胸狭隘的",  //妒忌
+    proud: "孤高自持的",  //高傲
+    rebellious: "桀骜不驯的",  //叛逆
+    competitive: "攀高比低的",  //势利
+    petty: "锱铢必较的",  //抠搜
+    powerOriented: "恐弱慕强的" //恐弱
+  };
+// ===== B模组（人格角色）=====
+const typeMapB = {
+  parent: "家长",
+  intuitive: "灵觉者",
+  guide: "引路人",
+  observer: "观察者",
+  strategist: "操盘手",
+  artist: "艺术家",
+  crowd: "乌合之众",
+  leader: "领导者",
+  opportunist: "投机者",
+  rebel: "盗火者",
+  guardian: "守夜人",
+  pretender: "凡尔赛",
+  mediator: "和事佬",
+  ambitious: "野心家",
+  hypocrite: "伪君子",
+  martyr: "殉道者",
+  narcissist: "自恋者",
+  idealist: "理想家",
+  : "吸血鬼",
+  traveler: "旅人",
+  hunter: "猎人",
+  loveBrain: "恋爱脑",
+  lustBrain: "性缘脑"
+  mindPlayer: "弄心者",
+};
+
+
+  const typeDescriptionsA = {
     hero: "你有明显的是非感和保护欲，面对不公或弱者时更容易生出行动冲动，也倾向把“该不该”看得比“值不值”更重。",
     detached: "你和俗世情绪之间天然有一点距离，很多人在意的得失并不容易真正绑住你，你更容易抽离、旁观、看淡。",
     agreeable: "你更倾向于维持关系表面的和气，不愿意轻易得罪人，常常会把冲突往后放，把圆场放在前面。",
     naive: "你身上有很强的学生气和未经驯化的轻信，容易先用善意理解别人，也容易把世界想得比它实际更简单。",
-    wise: "你看起来不争不抢、甚至有点钝，但并不是真的不明白，而是很多事你懒得计较，知道轻重，也知道让渡。",
+    Magnanimous: "你看起来不争不抢、甚至有点钝，但并不是真的不明白，而是很多事你懒得计较，知道轻重，也知道让渡。",
     honest: "你很在意真实本身，不喜欢拐弯抹角，更不擅长用虚假的姿态经营自己，倾向于坦率地把自己放在关系里。",
     sensitive: "你对外界反应、评价、气氛和细节都更容易过度感受，想得多、内耗多，也更容易把很多事落到自己身上。",
     fakeSmart: "你很在意显得自己是懂的、清醒的、聪明的，但有时这种“想显得懂”会跑在真正的理解前面。",
     cynical: "你对很多秩序、公平、成功叙事都有天然的不信任，常常会先看到背后的利益、虚伪和不对劲。",
-    jealous: "你对比较、资源差距和他人优越感更敏感，容易被刺激到，也更容易在关系里生出防备、妒意和不服。"
+    jealous: "你对比较、资源差距和他人优越感更敏感，容易被刺激到，也更容易在关系里生出防备、妒意和不服。",
+    social: "你对人情世故有一定敏感度，知道在不同场合该说什么话、用什么态度维持关系。你不一定虚伪，但很少让自己处在完全没有缓冲的位置，更倾向于通过分寸和表达来让局面保持在可控范围内。",
+    selfish: "你在很多选择里会优先考虑自己的利益与感受，对他人的需求和情绪不会天然放在第一位。你并不一定冷酷，但很清楚资源有限，也不太愿意为别人承担不必要的代价。",
+    coward: "你并不缺乏判断力，很多事情你心里是明白的，但在真正需要承担风险、表达立场或正面冲突时，你更容易选择退一步。你习惯先规避代价，再考虑对错，很多时候不是不知道，而是不敢。",
+    proud: "你对自我有较强的边界感和尊严感，不太愿意轻易低头或依附他人。你更倾向于独立地维持自己的位置，即使在不占优势的情况下，也会下意识地保持一种克制和自持。",
+    rebellious: "你对规则、权威和既定秩序有天然的抵触或不信任感，不太愿意按照别人设定的路径行事。你更倾向于按自己的方式做选择，即使这意味着承担更多不确定性或与主流产生摩擦。",
+    competitive: "你对比较和位置非常敏感，很难完全忽视他人与自己的差距。你会下意识地评估高低、强弱与资源分配，并在这种比较中不断调整自己的状态，既可能成为动力，也可能带来压力。",
+    petty: "你对得失和细节的感受比较具体且不容易放过，小到一句话、一点资源分配，都可能被你记在心里。你不一定恶意，但很难真正做到一笑而过，更倾向于在细微处较真。",
+    powerOriented: "你对强弱关系非常敏感，更容易向强者靠拢、对权力或资源集中者产生认同，同时在面对弱势一方时会本能地拉开距离。你的判断标准往往不是单纯的对错，而是“谁更强、谁更有价值。”
   };
+    
+  const typeDescriptionsB = {
+    parent: "你更容易成为他人依赖的对象，习惯承担责任，在关系中常常不自觉地站在照顾与支撑的位置。",
+    intuitive: "你对情绪、氛围和潜在变化极为敏感，很多判断不是靠逻辑，而是一种快速而直接的直觉。",
+    guide: "你习惯总结经验、输出观点，更容易在关系中扮演老师、引导者或“解释世界”的角色。",
+    observer: "你习惯站在局外观察，保持抽离和距离感，不轻易完全代入某个立场，带一点旁观与虚无气质。",
+    strategist: "你享受操盘事情、推动局面发展的过程，更在意事情如何运转、如何被设计和实现。",
+    artist: "你对审美、情绪和浪漫体验有很高感受力，更容易沉浸在表达、自我感受和‘玫瑰人生’之中。",
+    crowd: "你容易受环境和群体影响，立场不够固定，倾向顺着局势或多数人的方向移动。",
+    leader: "你具备一定的大局观和承担能力，在关键时刻更容易站出来组织、决策和扛下责任。",
+    opportunist: "你更倾向抓住机会，而不是坚持原则，擅长在变化中找到对自己最有利的位置。",
+    rebel: "你不会天然从既有立场或身份出发，更容易跳出规则甚至背离原有阵营，用自己的判断去看世界。",
+    guardian: "你更容易为了他人或某种价值持续付出，带有明显的守护、保护甚至牺牲倾向。",
+    pretender: "你对优越感和展示感很敏感，无论是自己还是他人，都容易卷入一种微妙的‘装与被装’的关系中。",
+    mediator: "你倾向于缓和冲突、维持关系表面的和气，更在意局面是否能过得去，而不是非要分清对错。",
+    ambitious: "你对更高位置和更大资源有明显渴望，但有时行动和承担能力未必完全匹配这种野心。",
+    hypocrite: "你对道德和规则有选择性使用的倾向，容易用它约束他人，却对自己保留灵活空间。",
+    martyr: "你对某种理念、真理或价值有执着，愿意为之坚持甚至付出代价，不轻易妥协。",
+    narcissist: "你更容易把关注点放在自身感受与价值上，很多判断围绕“我”展开，自我感较强。",
+    idealist: "你倾向构建理想图景和美好蓝图，但在现实执行层面可能动力不足或落地较弱。",
+    vampire: "你更容易依附他人获取资源、情绪或支持，在关系中带有一定消耗性，像填不满的黑洞。",
+    traveler: "你对稳定归属没有强依赖，更容易在不同环境、关系和状态中游走，带有流动感。",
+    hunter: "你习惯把世界看作资源竞争场，对强弱和位置极其敏感，处处在比较、评估和争夺。",
+    loveBrain: "你在关系中容易以爱情为中心，很多判断和行为会不自觉被情感牵引。",
+    lustBrain: "你对性吸引和性关系更敏感，很多反应会受到欲望和生理驱动的影响。"
+    mindPlayer: "你对人的情绪、欲望、脆弱点和反应很敏感，不只是看懂，还会忍不住去试探、拨动甚至操弄。你享受影响他人心理状态的感觉，比起单纯完成事情，你更在意人是否被你拿捏。"
+};
 
   const questions = [
     {
       title: "1. 看到有人被明显欺负时，你更可能：",
       options: [
-        { text: "A 站出来说句公道话", scores: { hero: 3, honest: 1 } },
-        { text: "B 觉得这就是世道，心里知道就行", scores: { detached: 3, wise: 1 } },
-        { text: "C 想帮，但又怕自己卷进去", scores: { agreeable: 2, sensitive: 2 } },
-        { text: "D 先想想这人是不是也有问题", scores: { fakeSmart: 2, cynical: 2 } }
+        { text: "A 站出来说句公道话", scoresA: { hero: 3, honest: 1 } },
+        { text: "B 觉得这就是世道，心里知道就行", scoresA: { social: 2, selfish: 2 } },
+        { text: "C 想帮，但又怕自己卷进去", scoresA: { coward: 3, selfish: 1 } },
+        { text: "D 先想想这人是不是也有问题", scoresA: { powerOriented: 3 } },
+        { text: "E 又不知道具体情况，跟我没关系", scoresA: { selfish: 2, cynical 2 } },
+        { text: "F 有趣，看看热闹", scoresB: { observer: 3 } }
       ]
     },
     {
       title: "2. 别人占了你一点小便宜，你通常：",
       options: [
-        { text: "A 只要不过分就算了", scores: { wise: 3, detached: 1 } },
-        { text: "B 会直接说清楚，不想憋着", scores: { honest: 3, hero: 1 } },
-        { text: "C 有点不舒服，但还是不想撕破脸", scores: { agreeable: 3, sensitive: 1 } },
-        { text: "D 会记着，下次找机会还回去", scores: { jealous: 3, cynical: 1 } }
+        { text: "A 只要不过分就算了", scoresA: { Magnanimous: 3, detached: 1 } },
+        { text: "B 会直接说清楚，不想憋着", scoresA: { honest: 3, hero: 1 } },
+        { text: "C 有点不舒服，但还是不想撕破脸", scoresA: { coward: 3, agreeable: 1} },
+        { text: "D 会记着，下次找机会还回去", scoresA: { jealous: 3, cynical: 1 } },
+        { text: "E 直接喷他，敢欺负到我头上的人还没出生", scoresA: { rebellious: 3, selfish: 1 } }
       ]
     },
     {
-      title: "3. 别人夸夸其谈时，你更容易：",
+      title: "3. 别人夸夸其谈(确实在装)时，你更容易：",
       options: [
-        { text: "A 心里翻白眼，觉得很装", scores: { hero: 2, cynical: 2 } },
-        { text: "B 表面配合，懒得拆穿", scores: { detached: 2, agreeable: 1 } },
-        { text: "C 真诚回应，觉得人家可能也只是想表达", scores: { honest: 2, naive: 1 } },
-        { text: "D 有点不舒服，觉得他凭什么这么显摆", scores: { jealous: 3 } }
+        { text: "A 心里翻白眼，觉得很装", scoresA: { proud: 2, rebellious: 2 } },
+        { text: "B 表面配合，懒得拆穿", scoresA: { detached: 2, Magnanimous: 2 } },
+        { text: "C 真诚回应，觉得人家可能也只是想表达", scoresA: { naive: 3 } },
+        { text: "D 有点不舒服，觉得他凭什么这么显摆", scoresA: { proud: 2 ,rebellious: 1, jealous: 1 } }
       ]
     },
     {
       title: "4. 你更认同哪句话：",
       options: [
-        { text: "A 路见不平，能帮就帮", scores: { hero: 3 } },
-        { text: "B 万事自有因果，不必太执着", scores: { detached: 3, wise: 1 } },
-        { text: "C 和气最重要，别把关系弄僵", scores: { agreeable: 3 } },
-        { text: "D 人还是得先顾好自己", scores: { fakeSmart: 1, jealous: 2 } }
+        { text: "A 路见不平，能帮就帮", scoresA: { hero: 3 } },
+        { text: "B 万事自有因果，不必太执着", scoresA: { detached: 3 } },
+        { text: "C 和气最重要，别把关系弄僵", scoresA: { agreeable: 2, social: 2 } },
+        { text: "D 人还是得先顾好自己", scoresA: { selfish: 3 } }
       ]
     },
     {
       title: "5. 你被误解时通常会：",
       options: [
-        { text: "A 立刻解释清楚", scores: { honest: 3, hero: 1 } },
-        { text: "B 无所谓，懂的人自然懂", scores: { detached: 3 } },
-        { text: "C 很难受，会想很久", scores: { sensitive: 3 } },
-        { text: "D 嘴上不说，心里给对方记一笔", scores: { jealous: 2, cynical: 1 } }
+        { text: "A 立刻解释清楚", scoresA: { honest: 3, hero: 1 } },
+        { text: "B 不是很在乎别人的看法 ", scoresA: { detached: 3 } },
+        { text: "C 很难受，会想很久", scoresA: { sensitive: 3 } },
+        { text: "D 嘴上不说，心里给对方记一笔", scoresA: { coward: 2, cynical: 3 } } 
+        { text: "E 不屑。懂我的人不需要解释，不懂我的人不配我解释", scoresA: { fakeSmart: 2, proud: 3 } } 
+        
       ]
     },
     {
       title: "6. 别人找你帮忙，但你其实不太想帮时：",
       options: [
-        { text: "A 还是会帮，尤其对方真的很难", scores: { hero: 2, agreeable: 1 } },
-        { text: "B 会直接说不方便", scores: { honest: 3 } },
-        { text: "C 嘴上答应得好听，实际拖着", scores: { agreeable: 2, fakeSmart: 1 } },
-        { text: "D 会先衡量这人值不值得", scores: { cynical: 2, jealous: 1 } }
+        { text: "A 还是会帮，尤其对方真的很难", scoresA: { hero: 2, agreeable: 1 } },
+        { text: "B 会直接说不方便", scoresA: { honest: 2, naive: 2 } },
+        { text: "C 嘴上答应得好听，实际拖着", scoresA: { agreeable: 1, petty: 3, social:1 } },
+        { text: "D 会先衡量这人值不值得", scoresA: { social: 2, competitive: 3 , powerOriented:1 } }
       ]
     },
     {
       title: "7. 你小时候或刚入社会时，更像：",
       options: [
-        { text: "A 很容易相信别人说的话", scores: { naive: 3 } },
-        { text: "B 老实，不争，吃点亏也算了", scores: { wise: 3 } },
-        { text: "C 玻璃心，别人一句话能想很久", scores: { sensitive: 3 } },
-        { text: "D 总觉得自己其实看得比别人透", scores: { fakeSmart: 3 } }
+        { text: "A 很容易相信别人说的话", scoresA: { naive: 3 } },
+        { text: "B 老实，不争，吃点亏也算了", scoresA: { Magnanimous: 3 } },
+        { text: "C 敏感，别人一句话能想很久", scoresA: { sensitive: 3 } },
+        { text: "D 总觉得自己其实看得比别人透", scoresA: { fakeSmart: 3 }, scoresB: { narcissist: 3 } },
+        { text: "E 忍不住不平那些生来就比自己拥有更多资源资源的同学，凭什么", scoresA: { cynical: 2, jealous: 3, competitive: 1}, scoresB: { vampire: 2 } },
+        { text: "F 不想输给任何人", scoresA: { competitive:3 , proud: 3,}, scoresB: { narcissist: 3 } },
       ]
     },
     {
-      title: "8. 看到别人混得比你好一点时，你第一反应更像：",
+      title: "8. 看到别人混得比你好时，你第一反应更像：",
       options: [
-        { text: "A 真心替他开心，也会看看自己能学什么", scores: { honest: 2, hero: 1 } },
-        { text: "B 每个人命不一样，没必要比", scores: { detached: 2, wise: 1 } },
-        { text: "C 会有一点酸，但表面还是会客气", scores: { jealous: 3 } },
-        { text: "D 会想他不过是运气好或会包装", scores: { cynical: 2, fakeSmart: 1 } }
+        { text: "A 真心替他开心，也会看看自己能学什么", scoresA: { Magnanimous: 2, honest: 1 } },
+        { text: "B 每个人命不一样，没必要比", scoresA: { detached: 2, proud: 1 } },
+        { text: "C 会有一点酸，但表面还是会客气", scoresA: { jealous: 3 } },
+        { text: "D 会想他不过是运气好或会包装", scoresA: { cynical: 3, fakeSmart: 1 } },
+        { text: "D V我50", scoresA: { social:1, competitive:1, selfish:1, agreeable:2} },
       ]
     },
     {
       title: "9. 如果一个人总向你输出负能量，你会：",
       options: [
-        { text: "A 能接就接，能安慰就安慰", scores: { hero: 2, agreeable: 1 } },
-        { text: "B 觉得人都有低谷，顺其自然", scores: { detached: 2, wise: 1 } },
-        { text: "C 自己也会被带得很难受", scores: { sensitive: 3 } },
-        { text: "D 表面安慰，心里觉得他好烦", scores: { cynical: 1, jealous: 2 } }
+        { text: "A 能接就接，能安慰就安慰", scoresA: { hero: 2, agreeable: 1 } },
+        { text: "B 觉得人都有低谷，顺其自然", scoresA: { detached: 3 } },
+        { text: "C 自己也会被带得很难受", scoresA: { sensitive: 3 } },
+        { text: "D 表面安慰，心里觉得他好烦", scoresA: { social: 3, powerOriented: 1 ,selfish:1} }
+        { text: "E 关我屁事", scoresA: { powerOriented: 3, competitive: 3 } }
       ]
     },
     {
       title: "10. 你在群体里更常扮演：",
       options: [
-        { text: "A 那个看不惯就会说的人", scores: { hero: 2, honest: 1 } },
-        { text: "B 那个不太卷入情绪的人", scores: { detached: 3 } },
-        { text: "C 那个谁都不得罪、到处圆场的人", scores: { agreeable: 3 } },
-        { text: "D 那个暗暗观察、心里有很多判断的人", scores: { jealous: 1, fakeSmart: 2 } }
+        { text: "A 那个看不惯就会说的人", scoresA: { hero: 2, honest: 1,rebellious:3 } },
+        { text: "B 那个不太卷入情绪的人", scoresA: { detached: 3 } },
+        { text: "C 那个谁都不得罪、到处圆场的人", scoresA: { agreeable: 3 } },
+        { text: "D 那个暗暗观察、心里有很多判断的人", scoresA: { jealous: 1, fakeSmart: 2 } }
       ]
     },
     {
       title: "11. 你更怕哪种事：",
       options: [
-        { text: "A 明知道不对却没人说", scores: { hero: 3 } },
-        { text: "B 被琐碎和俗气的事情困住", scores: { detached: 3 } },
-        { text: "C 让别人觉得我不好相处", scores: { agreeable: 2, sensitive: 1 } },
-        { text: "D 被比下去、显得不如人", scores: { jealous: 3 } }
+        { text: "A 明知道不对却没人说", scoresA: { hero: 3 } },
+        { text: "B 被琐碎和俗气的事情困住", scoresA: { detached: 3 } },
+        { text: "C 让别人觉得我不好相处", scoresA: { agreeable: 2, sensitive: 2 } },
+        { text: "D 被比下去、显得不如人", scoresA: { competitive: 3,powerOriented:3 } }
       ]
     },
     {
       title: "12. 别人指出你的问题时，你更可能：",
       options: [
-        { text: "A 接受，只要他说得对", scores: { honest: 3, wise: 1 } },
-        { text: "B 表面点头，心里已经受伤了", scores: { sensitive: 3 } },
-        { text: "C 下意识替自己辩解两句", scores: { fakeSmart: 2, jealous: 1 } },
-        { text: "D 懒得往心里去", scores: { detached: 2, wise: 1 } }
+        { text: "A 接受，只要他说得对", scoresA: { honest: 3, Magnanimous: 1 } },
+        { text: "B 表面点头，心里已经受伤了", scoresA: { sensitive: 3 } },
+        { text: "C 下意识替自己辩解两句", scoresA: { fakeSmart: 2, jealous: 1 } },
+        { text: "D 懒得往心里去", scoresA: { detached: 2, Magnanimous: 1 } }
       ]
     },
     {
       title: "13. 对“吃亏是福”这句话，你更接近：",
       options: [
-        { text: "A 不一定是福，但不是所有亏都值得计较", scores: { wise: 3 } },
-        { text: "B 如果能帮到别人，吃点亏也没什么", scores: { hero: 2, honest: 1 } },
-        { text: "C 我总是吃亏，但也不太会争", scores: { agreeable: 2, naive: 1 } },
-        { text: "D 这话就是让老实人继续吃亏", scores: { cynical: 3 } }
+        { text: "A 不一定是福，但不是所有亏都值得计较", scoresA: { Magnanimous: 3 } },
+        { text: "B 如果能帮到别人，吃点亏也没什么", scoresA: { hero: 2, honest: 1 } },
+        { text: "C 我总是吃亏，但也不太会争", scoresA: { agreeable: 2, naive: 1 } },
+        { text: "D 这话就是让老实人继续吃亏", scoresA: { cynical: 3 } }
       ]
     },
     {
       title: "14. 你更容易被哪种评价伤到：",
       options: [
-        { text: "A 说我不真诚", scores: { honest: 3 } },
-        { text: "B 说我幼稚、不懂社会", scores: { naive: 3 } },
-        { text: "C 说我没用、不够好", scores: { sensitive: 3 } },
-        { text: "D 说我小气、嫉妒心重", scores: { jealous: 2, sensitive: 1 } }
+        { text: "A 说我不真诚", scoresA: { honest: 3 } },
+        { text: "B 说我幼稚、不懂社会", scoresA: { naive: 3 } },
+        { text: "C 说我没用、不够好", scoresA: { sensitive: 3 } },
+        { text: "D 说我小气、嫉妒心重", scoresA: { jealous: 2, sensitive: 1 } }
       ]
     },
     {
       title: "15. 当你讲道理时，你更像：",
       options: [
-        { text: "A 真的想把事情说明白", scores: { honest: 2, hero: 1 } },
-        { text: "B 其实也没那么在乎谁对谁错", scores: { detached: 2, wise: 1 } },
-        { text: "C 想让场面别太难看", scores: { agreeable: 3 } },
-        { text: "D 想证明自己更懂一点", scores: { fakeSmart: 3 } }
+        { text: "A 真的想把事情说明白", scoresA: { honest: 2, hero: 1 } },
+        { text: "B 其实也没那么在乎谁对谁错", scoresA: { detached: 2, Magnanimous: 1 } },
+        { text: "C 想让场面别太难看", scoresA: { agreeable: 3 } },
+        { text: "D 想证明自己更懂一点", scoresA: { fakeSmart: 3 } }
       ]
     },
     {
       title: "16. 面对复杂的人情世故，你通常：",
       options: [
-        { text: "A 有点懵，常常后知后觉", scores: { naive: 3 } },
-        { text: "B 懂，但不太想卷进去", scores: { detached: 2, wise: 1 } },
-        { text: "C 明明很在意，却总处理不好", scores: { sensitive: 2, agreeable: 1 } },
-        { text: "D 会下意识分析谁在算计谁", scores: { cynical: 2, fakeSmart: 1 } }
+        { text: "A 有点懵，常常后知后觉", scoresA: { naive: 3 } },
+        { text: "B 懂，但不太想卷进去", scoresA: { detached: 2, Magnanimous: 1 } },
+        { text: "C 明明很在意，却总处理不好", scoresA: { sensitive: 2, agreeable: 1 } },
+        { text: "D 会下意识分析谁在算计谁", scoresA: { cynical: 2, fakeSmart: 1 } }
       ]
     },
     {
       title: "17. 你对“真诚”这件事的态度是：",
       options: [
-        { text: "A 再难也应该尽量真实", scores: { honest: 3 } },
-        { text: "B 真诚很好，但别太较真", scores: { wise: 2, detached: 1 } },
-        { text: "C 只要大家表面过得去就行", scores: { agreeable: 3 } },
-        { text: "D 这年头太真容易吃亏", scores: { cynical: 2, jealous: 1 } }
+        { text: "A 再难也应该尽量真实", scoresA: { honest: 3 } },
+        { text: "B 真诚很好，但别太较真", scoresA: { Magnanimous: 2, detached: 1 } },
+        { text: "C 只要大家表面过得去就行", scoresA: { agreeable: 3 } },
+        { text: "D 这年头太真容易吃亏", scoresA: { cynical: 2, jealous: 1 } }
       ]
     },
     {
       title: "18. 当你发现别人过得特别好时，你更像：",
       options: [
-        { text: "A 觉得那是他的福气", scores: { detached: 2, wise: 1 } },
-        { text: "B 羡慕，但也愿意承认别人厉害", scores: { honest: 2, sensitive: 1 } },
-        { text: "C 表面淡定，心里会不平衡", scores: { jealous: 3 } },
-        { text: "D 会想他背后一定有点什么", scores: { cynical: 2, fakeSmart: 1 } }
+        { text: "A 觉得那是他的福气", scoresA: { detached: 2, Magnanimous: 1 } },
+        { text: "B 羡慕，但也愿意承认别人厉害", scoresA: { honest: 2, sensitive: 1 } },
+        { text: "C 表面淡定，心里会不平衡", scoresA: { jealous: 3 } },
+        { text: "D 会想他背后一定有点什么", scoresA: { cynical: 2, fakeSmart: 1 } }
       ]
     },
     {
       title: "19. 如果朋友被人欺负了，你更可能：",
       options: [
-        { text: "A 明确站朋友这边", scores: { hero: 3 } },
-        { text: "B 劝他别太往心里去", scores: { detached: 2, wise: 1 } },
-        { text: "C 想帮双方缓和一下", scores: { agreeable: 3 } },
-        { text: "D 先分析朋友是不是也有责任", scores: { cynical: 2, honest: 1 } }
+        { text: "A 明确站朋友这边", scoresA: { hero: 3 } },
+        { text: "B 劝他别太往心里去", scoresA: { detached: 2, Magnanimous: 1 } },
+        { text: "C 想帮双方缓和一下", scoresA: { agreeable: 3 } },
+        { text: "D 先分析朋友是不是也有责任", scoresA: { cynical: 2, honest: 1 } }
       ]
     },
     {
       title: "20. 你更容易在哪件事上翻车：",
       options: [
-        { text: "A 太容易相信别人", scores: { naive: 3 } },
-        { text: "B 心太软，不会拒绝", scores: { agreeable: 2, hero: 1 } },
-        { text: "C 想太多，把自己困住", scores: { sensitive: 3 } },
-        { text: "D 以为自己看透了，其实没看全", scores: { fakeSmart: 3 } }
+        { text: "A 太容易相信别人", scoresA: { naive: 3 } },
+        { text: "B 心太软，不会拒绝", scoresA: { agreeable: 2, hero: 1 } },
+        { text: "C 想太多，把自己困住", scoresA: { sensitive: 3 } },
+        { text: "D 以为自己看透了，其实没看全", scoresA: { fakeSmart: 3 } }
       ]
     },
     {
       title: "21. 你更相信哪种生活方式：",
       options: [
-        { text: "A 做个有担当的人", scores: { hero: 3 } },
-        { text: "B 做个轻一点、松一点的人", scores: { detached: 3 } },
-        { text: "C 做个不惹事、大家都喜欢的人", scores: { agreeable: 3 } },
-        { text: "D 做个别让人看低的人", scores: { jealous: 2, fakeSmart: 1 } }
+        { text: "A 做个有担当的人", scoresA: { hero: 3 } },
+        { text: "B 做个轻一点、松一点的人", scoresA: { detached: 3 } },
+        { text: "C 做个不惹事、大家都喜欢的人", scoresA: { agreeable: 3 } },
+        { text: "D 做个别让人看低的人", scoresA: { jealous: 2, fakeSmart: 1 } }
       ]
     },
     {
       title: "22. 当别人吹捧你时，你通常：",
       options: [
-        { text: "A 会有点不好意思，但还是按真实来", scores: { honest: 2, naive: 1 } },
-        { text: "B 觉得都是外物，不必太当真", scores: { detached: 3 } },
-        { text: "C 很容易被哄得心软", scores: { naive: 2, agreeable: 1 } },
-        { text: "D 表面谦虚，心里其实很吃这一套", scores: { fakeSmart: 2, jealous: 1 } }
+        { text: "A 会有点不好意思，但还是按真实来", scoresA: { honest: 2, naive: 1 } },
+        { text: "B 觉得都是外物，不必太当真", scoresA: { detached: 3 } },
+        { text: "C 很容易被哄得心软", scoresA: { naive: 2, agreeable: 1 } },
+        { text: "D 表面谦虚，心里其实很吃这一套", scoresA: { fakeSmart: 2, jealous: 1 } }
       ]
     },
     {
       title: "23. 当你情绪低落时，更像：",
       options: [
-        { text: "A 想找个具体办法处理问题", scores: { hero: 2, honest: 1 } },
-        { text: "B 过一阵就好了，情绪本来也会来去", scores: { detached: 2, wise: 1 } },
-        { text: "C 会不断反刍为什么会这样", scores: { sensitive: 3 } },
-        { text: "D 会觉得别人都比我过得好", scores: { jealous: 2, cynical: 1 } }
+        { text: "A 想找个具体办法处理问题", scoresA: { hero: 2, honest: 1 } },
+        { text: "B 过一阵就好了，情绪本来也会来去", scoresA: { detached: 2, Magnanimous: 1 } },
+        { text: "C 会不断反刍为什么会这样", scoresA: { sensitive: 3 } },
+        { text: "D 会觉得别人都比我过得好", scoresA: { jealous: 2, cynical: 1 } }
       ]
     },
     {
       title: "24. 你最讨厌自己哪一面：",
       options: [
-        { text: "A 太容易心软", scores: { hero: 1, agreeable: 2 } },
-        { text: "B 太容易被人一眼看穿", scores: { naive: 2, sensitive: 1 } },
-        { text: "C 太想证明自己是对的", scores: { fakeSmart: 3 } },
-        { text: "D 会忍不住嫉妒和比较", scores: { jealous: 3 } }
+        { text: "A 太容易心软", scoresA: { hero: 1, agreeable: 2 } },
+        { text: "B 太容易被人一眼看穿", scoresA: { naive: 2, sensitive: 1 } },
+        { text: "C 太想证明自己是对的", scoresA: { fakeSmart: 3 } },
+        { text: "D 会忍不住嫉妒和比较", scoresA: { jealous: 3 } }
       ]
     },
     {
       title: "25. 如果必须用一句话概括自己，你更愿意承认：",
       options: [
-        { text: "A 我是个有底线的人", scores: { hero: 2, honest: 1 } },
-        { text: "B 我并没有那么执着于输赢得失", scores: { detached: 2, wise: 1 } },
-        { text: "C 我其实是个很好说话的人", scores: { agreeable: 3 } },
-        { text: "D 我比表面看起来更拧巴", scores: { sensitive: 2, cynical: 1 } }
+        { text: "A 我是个有底线的人", scoresA: { hero: 2, honest: 1 } },
+        { text: "B 我并没有那么执着于输赢得失", scoresA: { detached: 2, Magnanimous: 1 } },
+        { text: "C 我其实是个很好说话的人", scoresA: { agreeable: 3 } },
+        { text: "D 我比表面看起来更拧巴", scoresA: { sensitive: 2, cynical: 1 } }
       ]
     }
   ];
@@ -437,60 +519,113 @@
   function submitQuiz() {
     const errorText = document.getElementById('errorText');
     errorText.innerText = '';
-
-    const totalScores = {
+  // ===== A模组总分（性格倾向）=====
+  const totalScoresA = {
       hero: 0,
       detached: 0,
       agreeable: 0,
       naive: 0,
-      wise: 0,
+      Magnanimous: 0,
       honest: 0,
+      social: 0,
       sensitive: 0,
       fakeSmart: 0,
       cynical: 0,
-      jealous: 0
+      selfish: 0,
+      coward: 0,
+      jealous: 0,
+      proud: 0,
+      rebellious: 0,
+      competitive: 0,
+      petty: 0,
+      powerOriented: 0
     };
 
-    const answerLabels = [];
+  // ===== B模组总分（人格角色）=====
+  const totalScoresB = {
+      parent: 0,
+      intuitive: 0,
+      guide: 0,
+      observer: 0,
+      strategist: 0,
+      artist: 0,
+      crowd: 0,
+      leader: 0,
+      opportunist: 0,
+      rebel: 0,
+      guardian: 0,
+      pretender: 0,
+      mediator: 0,
+      ambitious: 0,
+      hypocrite: 0,
+      martyr: 0,
+      narcissist: 0,
+      idealist: 0,
+      : 0,
+      traveler: 0,
+      hunter: 0,
+      loveBrain: 0,
+      lustBrain: 0,
+      mindPlayer: 0
+};
 
-    for (let i = 0; i < questions.length; i++) {
-      const checked = document.querySelector(`input[name="question-${i}"]:checked`);
-      if (!checked) {
-        errorText.innerText = `你还有第 ${i + 1} 题没选。`;
-        return;
-      }
+  const answerLabels = [];
 
-      const optionIndex = Number(checked.value);
-      const selectedOption = questions[i].options[optionIndex];
-      answerLabels.push(String.fromCharCode(65 + optionIndex));
+  for (let i = 0; i < questions.length; i++) {
+    const checked = document.querySelector(`input[name="question-${i}"]:checked`);
+    if (!checked) {
+      errorText.innerText = `你还有第 ${i + 1} 题没选。`;
+      return;
+    }
 
-      for (const [typeKey, score] of Object.entries(selectedOption.scores)) {
-        totalScores[typeKey] += score;
+    const optionIndex = Number(checked.value);
+    const selectedOption = questions[i].options[optionIndex];
+    answerLabels.push(String.fromCharCode(65 + optionIndex));
+
+    // ===== A模组加分 =====
+    for (const [typeKey, score] of Object.entries(selectedOption.scoresA || {})) {
+      if (totalScoresA.hasOwnProperty(typeKey)) {
+        totalScoresA[typeKey] += score;
       }
     }
 
-    const sortedResults = Object.entries(totalScores).sort((a, b) => b[1] - a[1]);
-    const top1 = sortedResults[0][0];
-    const top2 = sortedResults[1][0];
+    // ===== B模组加分 =====
+    for (const [typeKey, score] of Object.entries(selectedOption.scoresB || {})) {
+      if (totalScoresB.hasOwnProperty(typeKey)) {
+        totalScoresB[typeKey] += score;
+      }
+    }
+  }
 
-    const result = `你的第一匹配是【${typeMap[top1]}】
-你的第二匹配是【${typeMap[top2]}】
+  // ===== A模组排序，取第一名 =====
+  const sortedA = Object.entries(totalScoresA).sort((a, b) => b[1] - a[1]);
+  const topA = sortedA[0][0];
 
-主结果解析：
-${typeDescriptions[top1]}
+  // ===== B模组排序，取第一名 =====
+  const sortedB = Object.entries(totalScoresB).sort((a, b) => b[1] - a[1]);
+  const topB = sortedB[0][0];
 
-副结果解析：
-${typeDescriptions[top2]}
+  // ===== A + B 拼接 =====
+  const combinedType = `${typeMapA[topA]}${typeMapB[topB]}`;
+
+  const result = `你的类型是【${combinedType}】
+
+A面性格倾向：${typeMapA[topA]}
+${typeDescriptionsA[topA]}
+
+B面人格特质：${typeMapB[topB]}
+${typeDescriptionsB[topB]}
 
 组合气质：
-你同时带有「${typeMap[top1]}」和「${typeMap[top2]}」两种倾向。前者更像你面对世界时最稳定、最常自动出现的反应模式；后者则像你在特定关系、情绪状态或压力环境下会浮出来的另一层底色。`;
+你外在更像「${typeMapA[topA]}」，这是你最自然、最常见的反应方式；
+而你内在的人格角色更偏向「${typeMapB[topB]}」，这决定了你在关系、局面和社会互动里更像什么样的人。`;
 
-    document.getElementById('resultBox').style.display = 'block';
-    document.getElementById('resultText').innerText =
-      `你的作答：${answerLabels.join(' / ')}\n\n${result}`;
+  document.getElementById('resultBox').style.display = 'block';
+  document.getElementById('resultText').innerText =
+    `你的作答：${answerLabels.join(' / ')}\n\n${result}`;
 
-    document.getElementById('resultBox').scrollIntoView({ behavior: 'smooth' });
-  }
+  document.getElementById('resultBox').scrollIntoView({ behavior: 'smooth' });
+}
 
   function resetQuiz() {
     const radios = document.querySelectorAll('input[type="radio"]');
