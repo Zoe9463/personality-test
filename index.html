@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SDTI人格测试</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f5f5;
+      color: #222;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 24px 16px 60px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 30px;
+      margin-bottom: 8px;
+      font-size: 34px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #888;
+      margin-bottom: 30px;
+    }
+
+    .notice {
+      background: #ebebeb;
+      border-left: 5px solid #aaa;
+      padding: 18px;
+      margin-bottom: 28px;
+      color: #444;
+    }
+
+    .question-box {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .question-number {
+      color: #888;
+      margin-bottom: 12px;
+    }
+
+    .question-title {
+      font-size: 28px;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    .option {
+      display: block;
+      width: 100%;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 18px;
+      margin-bottom: 14px;
+      text-align: left;
+      font-size: 20px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .option:hover {
+      background: #f8f8f8;
+      border-color: #999;
+    }
+
+    .result-box {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      display: none;
+    }
+
+    .result-title {
+      font-size: 30px;
+      margin-bottom: 16px;
+    }
+
+    .restart-btn {
+      margin-top: 20px;
+      padding: 14px 20px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      background: #222;
+      color: white;
+      cursor: pointer;
+    }
+
+    .progress {
+      text-align: center;
+      color: #777;
+      margin-bottom: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>SDTI人格测试 v1.0</h1>
+    <div class="subtitle">共 3 题 · 一份非常正经的问卷</div>
+
+    <div class="notice">
+      答案无对错。维度已隐藏，反正不隐藏你也不会认真答。
+    </div>
+
+    <div id="quizBox" class="question-box">
+      <div class="progress" id="progress"></div>
+      <div class="question-number" id="questionNumber"></div>
+      <div class="question-title" id="questionTitle"></div>
+      <div id="options"></div>
+    </div>
+
+    <div id="resultBox" class="result-box">
+      <div class="result-title">测试结果</div>
+      <div id="resultText"></div>
+      <button class="restart-btn" onclick="restartQuiz()">重新测试</button>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        title: '“向上爬”这件事对你而言更像：',
+        options: [
+          { text: 'A 爬，但爬的是我自己想爬的那棵树', value: 'A' },
+          { text: 'B 爬不爬看心情，树也不一定非得是树', value: 'B' },
+          { text: 'C 不爬，我在树底下开了个摊卖柠檬水', value: 'C' }
+        ]
+      },
+      {
+        title: '面对突如其来的安排，你通常会：',
+        options: [
+          { text: 'A 先接受，再想办法处理', value: 'A' },
+          { text: 'B 看是谁安排的、我烦不烦', value: 'B' },
+          { text: 'C 先吐槽一下，再决定动不动', value: 'C' }
+        ]
+      },
+      {
+        title: '你更容易被哪种状态吸引：',
+        options: [
+          { text: 'A 清晰、稳定、可掌控', value: 'A' },
+          { text: 'B 神秘、有趣、有点反常', value: 'B' },
+          { text: 'C 自由、松弛、别来管我', value: 'C' }
+        ]
+      }
+    ];
+
+    let currentQuestion = 0;
+    let answers = [];
+
+    function renderQuestion() {
+      const q = questions[currentQuestion];
+      document.getElementById('progress').innerText = `第 ${currentQuestion + 1} / ${questions.length} 题`;
+      document.getElementById('questionNumber').innerText = `第 ${currentQuestion + 1} 题 · 维度已隐藏`;
+      document.getElementById('questionTitle').innerText = q.title;
+
+      const optionsBox = document.getElementById('options');
+      optionsBox.innerHTML = '';
+
+      q.options.forEach(option => {
+        const btn = document.createElement('button');
+        btn.className = 'option';
+        btn.innerText = option.text;
+        btn.onclick = () => selectAnswer(option.value);
+        optionsBox.appendChild(btn);
+      });
+    }
+
+    function selectAnswer(value) {
+      answers.push(value);
+      currentQuestion++;
+
+      if (currentQuestion < questions.length) {
+        renderQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      document.getElementById('quizBox').style.display = 'none';
+      document.getElementById('resultBox').style.display = 'block';
+
+      const countA = answers.filter(x => x === 'A').length;
+      const countB = answers.filter(x => x === 'B').length;
+      const countC = answers.filter(x => x === 'C').length;
+
+      let result = '';
+
+      if (countA >= countB && countA >= countC) {
+        result = '你是【稳控型人格】。你偏向明确、独立、讲究效率，虽然表面平静，但心里其实很有主意。';
+      } else if (countB >= countA && countB >= countC) {
+        result = '你是【游离型人格】。你不爱被硬套进框架，直觉强，节奏自由，讨厌被催。';
+      } else {
+        result = '你是【松弛型人格】。你有自己的活法，不一定争抢，但总能找到属于自己的位置。';
+      }
+
+      document.getElementById('resultText').innerText =
+        `你的答案：${answers.join(' / ')}\n\n${result}`;
+    }
+
+    function restartQuiz() {
+      currentQuestion = 0;
+      answers = [];
+      document.getElementById('quizBox').style.display = 'block';
+      document.getElementById('resultBox').style.display = 'none';
+      renderQuestion();
+    }
+
+    renderQuestion();
+  </script>
+</body>
+</html>
