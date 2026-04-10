@@ -221,7 +221,7 @@ const typeMapB = {
     rebellious: "你对规则、权威和既定秩序有天然的抵触或不信任感，不太愿意按照别人设定的路径行事。你更倾向于按自己的方式做选择，即使这意味着承担更多不确定性或与主流产生摩擦。",
     competitive: "你对比较和位置非常敏感，很难完全忽视他人与自己的差距。你会下意识地评估高低、强弱与资源分配，并在这种比较中不断调整自己的状态，既可能成为动力，也可能带来压力。",
     petty: "你对得失和细节的感受比较具体且不容易放过，小到一句话、一点资源分配，都可能被你记在心里。你不一定恶意，但很难真正做到一笑而过，更倾向于在细微处较真。",
-    powerOriented: "你对强弱关系非常敏感，更容易向强者靠拢、对权力或资源集中者产生认同，同时在面对弱势一方时会本能地拉开距离。你的判断标准往往不是单纯的对错，而是“谁更强、谁更有价值。”
+    powerOriented: "你对强弱关系非常敏感，更容易向强者靠拢、对权力或资源集中者产生认同，同时在面对弱势一方时会本能地拉开距离。你的判断标准往往不是单纯的对错，而是“谁更强、谁更有价值。”,
   };
     
   const typeDescriptionsB = {
@@ -247,8 +247,8 @@ const typeMapB = {
     traveler: "你对稳定归属没有强依赖，更容易在不同环境、关系和状态中游走，带有流动感。",
     hunter: "你习惯把世界看作资源竞争场，对强弱和位置极其敏感，处处在比较、评估和争夺。",
     loveBrain: "你在关系中容易以爱情为中心，很多判断和行为会不自觉被情感牵引。",
-    lustBrain: "你对性吸引和性关系更敏感，很多反应会受到欲望和生理驱动的影响。"
-    mindPlayer: "你对人的情绪、欲望、脆弱点和反应很敏感，不只是看懂，还会忍不住去试探、拨动甚至操弄。你享受影响他人心理状态的感觉，比起单纯完成事情，你更在意人是否被你拿捏。"
+    lustBrain: "你对性吸引和性关系更敏感，很多反应会受到欲望和生理驱动的影响。",
+    mindPlayer: "你对人的情绪、欲望、脆弱点和反应很敏感，不只是看懂，还会忍不住去试探、拨动甚至操弄。你享受影响他人心理状态的感觉，比起单纯完成事情，你更在意人是否被你拿捏。",
 };
 
   const questions = [
@@ -259,7 +259,7 @@ const typeMapB = {
         { text: "B 觉得这就是世道，心里知道就行", scoresA: { social: 2, selfish: 2 } },
         { text: "C 想帮，但又怕自己卷进去", scoresA: { coward: 3, selfish: 1 } },
         { text: "D 先想想这人是不是也有问题", scoresA: { powerOriented: 3 } },
-        { text: "E 又不知道具体情况，跟我没关系", scoresA: { selfish: 2, cynical 2 } },
+        { text: "E 又不知道具体情况，跟我没关系", scoresA: { selfish: 2 , cynical: 2} },
         { text: "F 有趣，看看热闹", scoresB: { observer: 3 } }
       ]
     },
@@ -297,7 +297,7 @@ const typeMapB = {
         { text: "A 立刻解释清楚", scoresA: { honest: 3, hero: 1 } },
         { text: "B 不是很在乎别人的看法 ", scoresA: { detached: 3 } },
         { text: "C 很难受，会想很久", scoresA: { sensitive: 3 } },
-        { text: "D 嘴上不说，心里给对方记一笔", scoresA: { coward: 2, cynical: 3 } } 
+        { text: "D 嘴上不说，心里给对方记一笔", scoresA: { coward: 2, cynical: 3 } },
         { text: "E 不屑。懂我的人不需要解释，不懂我的人不配我解释", scoresA: { fakeSmart: 2, proud: 3 } } 
         
       ]
@@ -329,7 +329,7 @@ const typeMapB = {
         { text: "B 每个人命不一样，没必要比", scoresA: { detached: 2, proud: 1 } },
         { text: "C 会有一点酸，但表面还是会客气", scoresA: { jealous: 3 } },
         { text: "D 会想他不过是运气好或会包装", scoresA: { cynical: 3, fakeSmart: 1 } },
-        { text: "D V我50", scoresA: { social:1, competitive:1, selfish:1, agreeable:2} },
+        { text: "E V我50", scoresA: { social:1, competitive:1, selfish:1, agreeable:2} },
       ]
     },
     {
@@ -338,7 +338,7 @@ const typeMapB = {
         { text: "A 能接就接，能安慰就安慰", scoresA: { hero: 2, agreeable: 1 } },
         { text: "B 觉得人都有低谷，顺其自然", scoresA: { detached: 3 } },
         { text: "C 自己也会被带得很难受", scoresA: { sensitive: 3 } },
-        { text: "D 表面安慰，心里觉得他好烦", scoresA: { social: 3, powerOriented: 1 ,selfish:1} }
+        { text: "D 表面安慰，心里觉得他好烦", scoresA: { social: 3, powerOriented: 1 ,selfish:1} },
         { text: "E 关我屁事", scoresA: { powerOriented: 3, competitive: 3 } }
       ]
     },
