@@ -1,355 +1,276 @@
-<script>
-  const typeMap = {
-    hero: "侠肝义胆的",
-    detached: "超脱俗世的",
-    agreeable: "处处求情的",
-    naive: "天真烂漫的",
-    wise: "大智若愚的",
-    honest: "坦荡真诚的",
-    sensitive: "敏感脆弱的",
-    fakeSmart: "自作聪明的",
-    cynical: "愤世嫉俗的",
-    jealous: "心胸狭隘的"
-  };
-
-  const typeDescriptions = {
-    hero: "你有明显的是非感和保护欲，面对不公或弱者时更容易生出行动冲动，也倾向把“该不该”看得比“值不值”更重。",
-    detached: "你和俗世情绪之间天然有一点距离，很多人在意的得失并不容易真正绑住你，你更容易抽离、旁观、看淡。",
-    agreeable: "你更倾向于维持关系表面的和气，不愿意轻易得罪人，常常会把冲突往后放，把圆场放在前面。",
-    naive: "你身上有很强的学生气和未经驯化的轻信，容易先用善意理解别人，也容易把世界想得比它实际更简单。",
-    wise: "你看起来不争不抢、甚至有点钝，但并不是真的不明白，而是很多事你懒得计较，知道轻重，也知道让渡。",
-    honest: "你很在意真实本身，不喜欢拐弯抹角，更不擅长用虚假的姿态经营自己，倾向于坦率地把自己放在关系里。",
-    sensitive: "你对外界反应、评价、气氛和细节都更容易过度感受，想得多、内耗多，也更容易把很多事落到自己身上。",
-    fakeSmart: "你很在意显得自己是懂的、清醒的、聪明的，但有时这种“想显得懂”会跑在真正的理解前面。",
-    cynical: "你对很多秩序、公平、成功叙事都有天然的不信任，常常会先看到背后的利益、虚伪和不对劲。",
-    jealous: "你对比较、资源差距和他人优越感更敏感，容易被刺激到，也更容易在关系里生出防备、妒意和不服。"
-  };
-
-  const questions = [
-    {
-      title: "1. 看到有人被明显欺负时，你更可能：",
-      options: [
-        { text: "A 站出来说句公道话", scores: { hero: 3, honest: 1 } },
-        { text: "B 觉得这就是世道，心里知道就行", scores: { detached: 3, wise: 1 } },
-        { text: "C 想帮，但又怕自己卷进去", scores: { agreeable: 2, sensitive: 1 } },
-        { text: "D 先想想这人是不是也有问题", scores: { cynical: 2, fakeSmart: 1 } }
-      ]
-    },
-    {
-      title: "2. 别人占了你一点小便宜，你通常：",
-      options: [
-        { text: "A 只要不过分就算了", scores: { wise: 3, detached: 1 } },
-        { text: "B 会直接说清楚，不想憋着", scores: { honest: 3, hero: 1 } },
-        { text: "C 有点不舒服，但还是不想撕破脸", scores: { agreeable: 3, sensitive: 1 } },
-        { text: "D 会记着，下次找机会还回去", scores: { jealous: 2, cynical: 1 } }
-      ]
-    },
-    {
-      title: "3. 别人夸夸其谈时，你更容易：",
-      options: [
-        { text: "A 心里翻白眼，觉得很装", scores: { fakeSmart: 2, cynical: 2 } },
-        { text: "B 表面配合，懒得拆穿", scores: { detached: 2, agreeable: 1 } },
-        { text: "C 真诚回应，觉得人家可能也只是想表达", scores: { honest: 2, naive: 1 } },
-        { text: "D 有点不舒服，觉得他凭什么这么显摆", scores: { jealous: 3 } }
-      ]
-    },
-    {
-      title: "4. 你更认同哪句话：",
-      options: [
-        { text: "A 路见不平，能帮就帮", scores: { hero: 3 } },
-        { text: "B 万事自有因果，不必太执着", scores: { detached: 3, wise: 1 } },
-        { text: "C 和气最重要，别把关系弄僵", scores: { agreeable: 3 } },
-        { text: "D 人还是得先顾好自己", scores: { cynical: 2, jealous: 1 } }
-      ]
-    },
-    {
-      title: "5. 你被误解时通常会：",
-      options: [
-        { text: "A 立刻解释清楚", scores: { honest: 3, hero: 1 } },
-        { text: "B 无所谓，懂的人自然懂", scores: { detached: 3 } },
-        { text: "C 很难受，会想很久", scores: { sensitive: 3 } },
-        { text: "D 嘴上不说，心里给对方记一笔", scores: { jealous: 2, cynical: 1 } }
-      ]
-    },
-    {
-      title: "6. 别人找你帮忙，但你其实不太想帮时：",
-      options: [
-        { text: "A 还是会帮，尤其对方真的很难", scores: { hero: 2, agreeable: 1 } },
-        { text: "B 会直接说不方便", scores: { honest: 3 } },
-        { text: "C 嘴上答应得好听，实际拖着", scores: { agreeable: 2, fakeSmart: 1 } },
-        { text: "D 会先衡量这人值不值得", scores: { cynical: 2, jealous: 1 } }
-      ]
-    },
-    {
-      title: "7. 你小时候或刚入社会时，更像：",
-      options: [
-        { text: "A 很容易相信别人说的话", scores: { naive: 3 } },
-        { text: "B 老实，不争，吃点亏也算了", scores: { wise: 3 } },
-        { text: "C 玻璃心，别人一句话能想很久", scores: { sensitive: 3 } },
-        { text: "D 总觉得自己其实看得比别人透", scores: { fakeSmart: 3 } }
-      ]
-    },
-    {
-      title: "8. 看到别人混得比你好一点时，你第一反应更像：",
-      options: [
-        { text: "A 真心替他开心，也会看看自己能学什么", scores: { honest: 2, hero: 1 } },
-        { text: "B 每个人命不一样，没必要比", scores: { detached: 2, wise: 1 } },
-        { text: "C 会有一点酸，但表面还是会客气", scores: { jealous: 3 } },
-        { text: "D 会想他不过是运气好或会包装", scores: { cynical: 2, fakeSmart: 1 } }
-      ]
-    },
-    {
-      title: "9. 如果一个人总向你输出负能量，你会：",
-      options: [
-        { text: "A 能接就接，能安慰就安慰", scores: { hero: 2, agreeable: 1 } },
-        { text: "B 觉得人都有低谷，顺其自然", scores: { detached: 2, wise: 1 } },
-        { text: "C 自己也会被带得很难受", scores: { sensitive: 3 } },
-        { text: "D 表面安慰，心里觉得他好烦", scores: { cynical: 2, jealous: 1 } }
-      ]
-    },
-    {
-      title: "10. 你在群体里更常扮演：",
-      options: [
-        { text: "A 那个看不惯就会说的人", scores: { hero: 2, honest: 1 } },
-        { text: "B 那个不太卷入情绪的人", scores: { detached: 3 } },
-        { text: "C 那个谁都不得罪、到处圆场的人", scores: { agreeable: 3 } },
-        { text: "D 那个暗暗观察、心里有很多判断的人", scores: { cynical: 2, fakeSmart: 1 } }
-      ]
-    },
-    {
-      title: "11. 你更怕哪种事：",
-      options: [
-        { text: "A 明知道不对却没人说", scores: { hero: 3 } },
-        { text: "B 被琐碎和俗气的事情困住", scores: { detached: 3 } },
-        { text: "C 让别人觉得我不好相处", scores: { agreeable: 2, sensitive: 1 } },
-        { text: "D 被比下去、显得不如人", scores: { jealous: 3 } }
-      ]
-    },
-    {
-      title: "12. 别人指出你的问题时，你更可能：",
-      options: [
-        { text: "A 接受，只要他说得对", scores: { honest: 3, wise: 1 } },
-        { text: "B 表面点头，心里已经受伤了", scores: { sensitive: 3 } },
-        { text: "C 下意识替自己辩解两句", scores: { fakeSmart: 2, jealous: 1 } },
-        { text: "D 懒得往心里去", scores: { detached: 2, wise: 1 } }
-      ]
-    },
-    {
-      title: "13. 对“吃亏是福”这句话，你更接近：",
-      options: [
-        { text: "A 不一定是福，但不是所有亏都值得计较", scores: { wise: 3 } },
-        { text: "B 如果能帮到别人，吃点亏也没什么", scores: { hero: 2, honest: 1 } },
-        { text: "C 我总是吃亏，但也不太会争", scores: { agreeable: 2, naive: 1 } },
-        { text: "D 这话就是让老实人继续吃亏", scores: { cynical: 3 } }
-      ]
-    },
-    {
-      title: "14. 你更容易被哪种评价伤到：",
-      options: [
-        { text: "A 说我不真诚", scores: { honest: 3 } },
-        { text: "B 说我幼稚、不懂社会", scores: { naive: 3 } },
-        { text: "C 说我没用、不够好", scores: { sensitive: 3 } },
-        { text: "D 说我小气、嫉妒心重", scores: { jealous: 2, sensitive: 1 } }
-      ]
-    },
-    {
-      title: "15. 当你讲道理时，你更像：",
-      options: [
-        { text: "A 真的想把事情说明白", scores: { honest: 2, hero: 1 } },
-        { text: "B 其实也没那么在乎谁对谁错", scores: { detached: 2, wise: 1 } },
-        { text: "C 想让场面别太难看", scores: { agreeable: 3 } },
-        { text: "D 想证明自己更懂一点", scores: { fakeSmart: 3 } }
-      ]
-    },
-    {
-      title: "16. 面对复杂的人情世故，你通常：",
-      options: [
-        { text: "A 有点懵，常常后知后觉", scores: { naive: 3 } },
-        { text: "B 懂，但不太想卷进去", scores: { detached: 2, wise: 1 } },
-        { text: "C 明明很在意，却总处理不好", scores: { sensitive: 2, agreeable: 1 } },
-        { text: "D 会下意识分析谁在算计谁", scores: { cynical: 2, fakeSmart: 1 } }
-      ]
-    },
-    {
-      title: "17. 你对“真诚”这件事的态度是：",
-      options: [
-        { text: "A 再难也应该尽量真实", scores: { honest: 3 } },
-        { text: "B 真诚很好，但别太较真", scores: { wise: 2, detached: 1 } },
-        { text: "C 只要大家表面过得去就行", scores: { agreeable: 3 } },
-        { text: "D 这年头太真容易吃亏", scores: { cynical: 2, jealous: 1 } }
-      ]
-    },
-    {
-      title: "18. 当你发现别人过得特别好时，你更像：",
-      options: [
-        { text: "A 觉得那是他的福气", scores: { detached: 2, wise: 1 } },
-        { text: "B 羡慕，但也愿意承认别人厉害", scores: { honest: 2, sensitive: 1 } },
-        { text: "C 表面淡定，心里会不平衡", scores: { jealous: 3 } },
-        { text: "D 会想他背后一定有点什么", scores: { cynical: 2, fakeSmart: 1 } }
-      ]
-    },
-    {
-      title: "19. 如果朋友被人欺负了，你更可能：",
-      options: [
-        { text: "A 明确站朋友这边", scores: { hero: 3 } },
-        { text: "B 劝他别太往心里去", scores: { detached: 2, wise: 1 } },
-        { text: "C 想帮双方缓和一下", scores: { agreeable: 3 } },
-        { text: "D 先分析朋友是不是也有责任", scores: { cynical: 2, honest: 1 } }
-      ]
-    },
-    {
-      title: "20. 你更容易在哪件事上翻车：",
-      options: [
-        { text: "A 太容易相信别人", scores: { naive: 3 } },
-        { text: "B 心太软，不会拒绝", scores: { agreeable: 2, hero: 1 } },
-        { text: "C 想太多，把自己困住", scores: { sensitive: 3 } },
-        { text: "D 以为自己看透了，其实没看全", scores: { fakeSmart: 3 } }
-      ]
-    },
-    {
-      title: "21. 你更相信哪种生活方式：",
-      options: [
-        { text: "A 做个有担当的人", scores: { hero: 3 } },
-        { text: "B 做个轻一点、松一点的人", scores: { detached: 3 } },
-        { text: "C 做个不惹事、大家都喜欢的人", scores: { agreeable: 3 } },
-        { text: "D 做个别让人看低的人", scores: { jealous: 2, fakeSmart: 1 } }
-      ]
-    },
-    {
-      title: "22. 当别人吹捧你时，你通常：",
-      options: [
-        { text: "A 会有点不好意思，但还是按真实来", scores: { honest: 2, naive: 1 } },
-        { text: "B 觉得都是外物，不必太当真", scores: { detached: 3 } },
-        { text: "C 很容易被哄得心软", scores: { naive: 2, agreeable: 1 } },
-        { text: "D 表面谦虚，心里其实很吃这一套", scores: { fakeSmart: 2, jealous: 1 } }
-      ]
-    },
-    {
-      title: "23. 当你情绪低落时，更像：",
-      options: [
-        { text: "A 想找个具体办法处理问题", scores: { hero: 2, honest: 1 } },
-        { text: "B 过一阵就好了，情绪本来也会来去", scores: { detached: 2, wise: 1 } },
-        { text: "C 会不断反刍为什么会这样", scores: { sensitive: 3 } },
-        { text: "D 会觉得别人都比我过得好", scores: { jealous: 2, cynical: 1 } }
-      ]
-    },
-    {
-      title: "24. 你最讨厌自己哪一面：",
-      options: [
-        { text: "A 太容易心软", scores: { hero: 1, agreeable: 2 } },
-        { text: "B 太容易被人一眼看穿", scores: { naive: 2, sensitive: 1 } },
-        { text: "C 太想证明自己是对的", scores: { fakeSmart: 3 } },
-        { text: "D 会忍不住嫉妒和比较", scores: { jealous: 3 } }
-      ]
-    },
-    {
-      title: "25. 如果必须用一句话概括自己，你更愿意承认：",
-      options: [
-        { text: "A 我是个有底线的人", scores: { hero: 2, honest: 1 } },
-        { text: "B 我并没有那么执着于输赢得失", scores: { detached: 2, wise: 1 } },
-        { text: "C 我其实是个很好说话的人", scores: { agreeable: 3 } },
-        { text: "D 我比表面看起来更拧巴", scores: { sensitive: 2, cynical: 1 } }
-      ]
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>人类模型测试</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f5f5;
+      color: #222;
+      line-height: 1.6;
     }
-  ];
 
-  function renderQuestions() {
-    const quizForm = document.getElementById('quizForm');
-    quizForm.innerHTML = '';
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 24px 16px 60px;
+    }
 
-    questions.forEach((question, index) => {
-      const questionBox = document.createElement('div');
-      questionBox.className = 'question-box';
+    h1 {
+      text-align: center;
+      margin-top: 24px;
+      margin-bottom: 8px;
+      font-size: 34px;
+    }
 
-      let optionsHtml = '';
-      question.options.forEach((option, optionIndex) => {
-        optionsHtml += `
-          <label class="option-item">
-            <input type="radio" name="question-${index}" value="${optionIndex}">
-            ${option.text}
-          </label>
+    .subtitle {
+      text-align: center;
+      color: #888;
+      margin-bottom: 28px;
+      font-size: 18px;
+    }
+
+    .notice {
+      background: #ebebeb;
+      border-left: 5px solid #aaa;
+      padding: 18px;
+      margin-bottom: 28px;
+      color: #444;
+      border-radius: 4px;
+    }
+
+    .question-box {
+      background: #fff;
+      padding: 22px;
+      border-radius: 14px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      margin-bottom: 18px;
+    }
+
+    .question-number {
+      color: #888;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .question-title {
+      font-size: 26px;
+      margin-bottom: 18px;
+    }
+
+    .option-item {
+      display: block;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      background: #fff;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .option-item:hover {
+      background: #f8f8f8;
+      border-color: #999;
+    }
+
+    .option-item input {
+      margin-right: 10px;
+      transform: scale(1.1);
+    }
+
+    .submit-wrap {
+      text-align: center;
+      margin-top: 28px;
+    }
+
+    .submit-btn,
+    .restart-btn {
+      padding: 14px 24px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      background: #222;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .result-box {
+      display: none;
+      background: #fff;
+      padding: 24px;
+      border-radius: 14px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      margin-top: 28px;
+      white-space: pre-line;
+    }
+
+    .result-title {
+      font-size: 30px;
+      margin-bottom: 16px;
+    }
+
+    .error {
+      color: #c62828;
+      text-align: center;
+      margin-top: 14px;
+      font-size: 16px;
+    }
+
+    .footer-space {
+      height: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>人类模型测试 v1.0</h1>
+    <div class="subtitle">共 35 题 · 不正经问卷</div>
+
+    <div class="notice">
+     Hey, take it easy.
+    </div>
+
+    <div id="quizForm"></div>
+
+    <div class="submit-wrap">
+      <button class="submit-btn" onclick="submitQuiz()">提交测试</button>
+      <div id="errorText" class="error"></div>
+    </div>
+
+    <div id="resultBox" class="result-box">
+      <div class="result-title">测试结果</div>
+      <div id="resultText"></div>
+      <br />
+      <button class="restart-btn" onclick="resetQuiz()">重新填写</button>
+    </div>
+
+    <div class="footer-space"></div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        title: '“你眼中世界的模样：',
+        options: [
+          { text: 'A 普通，该是啥样就是啥样，我是个客观的观察者', value: 'A' },
+          { text: 'B 世界会被我的情绪遮蔽上不同的滤镜，快乐时世界也会变的轻快多彩。', value: 'B' },
+          { text: 'C 我眼中有完全不同的世界，我能看到某种更本质的颗粒。', value: 'C' }
+        ]
+      },
+      {
+        title: '面对突如其来的安排，你通常会：',
+        options: [
+          { text: 'A 先接受，再想办法处理', value: 'A' },
+          { text: 'B 看是谁安排的、我烦不烦', value: 'B' },
+          { text: 'C 先吐槽一下，再决定动不动', value: 'C' }
+        ]
+      },
+      {
+        title: '你更容易被哪种状态吸引：',
+        options: [
+          { text: 'A 清晰、稳定、可掌控', value: 'A' },
+          { text: 'B 神秘、有趣、有点反常', value: 'B' },
+          { text: 'C 自由、松弛、别来管我', value: 'C' }
+        ]
+      },
+      {
+        title: '当别人误解你时，你更可能：',
+        options: [
+          { text: 'A 解释清楚，尽量减少误会', value: 'A' },
+          { text: 'B 看心情，有时懒得解释', value: 'B' },
+          { text: 'C 表面无所谓，背地里记一会儿', value: 'C' }
+        ]
+      },
+      {
+        title: '理想中的生活节奏更像：',
+        options: [
+          { text: 'A 稳定推进，每一步都有安排', value: 'A' },
+          { text: 'B 有变化、有惊喜、不太无聊', value: 'B' },
+          { text: 'C 宽松自由，最好没人催我', value: 'C' }
+        ]
+      }
+    ];
+
+    function renderQuestions() {
+      const quizForm = document.getElementById('quizForm');
+      quizForm.innerHTML = '';
+
+      questions.forEach((question, index) => {
+        const questionBox = document.createElement('div');
+        questionBox.className = 'question-box';
+
+        let optionsHtml = '';
+        question.options.forEach((option) => {
+          optionsHtml += `
+            <label class="option-item">
+              <input type="radio" name="question-${index}" value="${option.value}">
+              ${option.text}
+            </label>
+          `;
+        });
+
+        questionBox.innerHTML = `
+          <div class="question-number">第 ${index + 1} 题 · 维度已隐藏</div>
+          <div class="question-title">${question.title}</div>
+          <div>${optionsHtml}</div>
         `;
+
+        quizForm.appendChild(questionBox);
+      });
+    }
+
+    function submitQuiz() {
+      const answers = [];
+      const errorText = document.getElementById('errorText');
+      errorText.innerText = '';
+
+      for (let i = 0; i < questions.length; i++) {
+        const checked = document.querySelector(`input[name="question-${i}"]:checked`);
+        if (!checked) {
+          errorText.innerText = `你还有第 ${i + 1} 题没选。`;
+          return;
+        }
+        answers.push(checked.value);
+      }
+
+      const countA = answers.filter(x => x === 'A').length;
+      const countB = answers.filter(x => x === 'B').length;
+      const countC = answers.filter(x => x === 'C').length;
+
+      let result = '';
+
+      if (countA >= countB && countA >= countC) {
+        result = '你是【稳控型人格】。\n你偏向明确、独立、讲究效率，虽然表面平静，但心里其实很有主意。';
+      } else if (countB >= countA && countB >= countC) {
+        result = '你是【游离型人格】。\n你不爱被硬套进框架，直觉强，节奏自由，讨厌被催。';
+      } else {
+        result = '你是【松弛型人格】。\n你有自己的活法，不一定争抢，但总能找到属于自己的位置。';
+      }
+
+      document.getElementById('resultBox').style.display = 'block';
+      document.getElementById('resultText').innerText =
+        `你的答案：${answers.join(' / ')}\n\n${result}`;
+
+      document.getElementById('resultBox').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function resetQuiz() {
+      const radios = document.querySelectorAll('input[type="radio"]');
+      radios.forEach(radio => {
+        radio.checked = false;
       });
 
-      questionBox.innerHTML = `
-        <div class="question-number">第 ${index + 1} 题 · 维度已隐藏</div>
-        <div class="question-title">${question.title}</div>
-        <div>${optionsHtml}</div>
-      `;
+      document.getElementById('errorText').innerText = '';
+      document.getElementById('resultBox').style.display = 'none';
 
-      quizForm.appendChild(questionBox);
-    });
-  }
-
-  function submitQuiz() {
-    const errorText = document.getElementById('errorText');
-    errorText.innerText = '';
-
-    const totalScores = {
-      hero: 0,
-      detached: 0,
-      agreeable: 0,
-      naive: 0,
-      wise: 0,
-      honest: 0,
-      sensitive: 0,
-      fakeSmart: 0,
-      cynical: 0,
-      jealous: 0
-    };
-
-    const answerLabels = [];
-
-    for (let i = 0; i < questions.length; i++) {
-      const checked = document.querySelector(`input[name="question-${i}"]:checked`);
-      if (!checked) {
-        errorText.innerText = `你还有第 ${i + 1} 题没选。`;
-        return;
-      }
-
-      const optionIndex = Number(checked.value);
-      const selectedOption = questions[i].options[optionIndex];
-      answerLabels.push(String.fromCharCode(65 + optionIndex));
-
-      for (const [typeKey, score] of Object.entries(selectedOption.scores)) {
-        totalScores[typeKey] += score;
-      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    const sortedResults = Object.entries(totalScores).sort((a, b) => b[1] - a[1]);
-    const top1 = sortedResults[0][0];
-    const top2 = sortedResults[1][0];
-
-    const result = `你的第一匹配是【${typeMap[top1]}】
-你的第二匹配是【${typeMap[top2]}】
-
-主结果解析：
-${typeDescriptions[top1]}
-
-副结果解析：
-${typeDescriptions[top2]}
-
-组合气质：
-你同时带有「${typeMap[top1]}」和「${typeMap[top2]}」两种倾向。前者更像你面对世界时最稳定、最常自动出现的反应模式；后者则像你在特定关系、情绪状态或压力环境下会浮出来的另一层底色。`;
-
-    document.getElementById('resultBox').style.display = 'block';
-    document.getElementById('resultText').innerText =
-      `你的作答：${answerLabels.join(' / ')}\n\n${result}`;
-
-    document.getElementById('resultBox').scrollIntoView({ behavior: 'smooth' });
-  }
-
-  function resetQuiz() {
-    const radios = document.querySelectorAll('input[type="radio"]');
-    radios.forEach(radio => {
-      radio.checked = false;
-    });
-
-    document.getElementById('errorText').innerText = '';
-    document.getElementById('resultBox').style.display = 'none';
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  renderQuestions();
-</script>
+    renderQuestions();
+  </script>
+</body>
+</html>
