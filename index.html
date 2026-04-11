@@ -257,13 +257,13 @@ const typeMapB = {
 
   const questions = [
     {
-      title: "1. 看到有人被明显欺负时，你更可能：",
+      title: "1. 看到路人被明显欺负时，你更可能：",
       options: [
-        { text: "A 站出来说句公道话", scoresA: { hero: 3, honest: 1 } },
-        { text: "B 觉得这就是世道，心里知道就行", scoresA: { social: 2, selfish: 2 } },
-        { text: "C 想帮，但又怕自己卷进去", scoresA: { coward: 3, selfish: 1 } },
-        { text: "D 先想想这人是不是也有问题", scoresA: { powerOriented: 3 } },
-        { text: "E 又不知道具体情况，跟我没关系", scoresA: { selfish: 2 , cynical: 2} },
+        { text: "A 站出来说句公道话", scoresA: { hero: 2.8, honest: 0.7, Magnanimous: 0.5 } },
+        { text: "B 觉得这就是世道，心里知道就行", scoresA: { social: 2, selfish: 1, coward: 1 } },
+        { text: "C 想帮，但又怕自己卷进去", scoresA: { coward: 2, hero: 1, sensitive:1 } },
+        { text: "D 先想想这人是不是也有问题", scoresA: { Skepticism: 1.5, powerOriented: 1.4, cynical: 1.1 } },
+        { text: "E 又不知道具体情况，跟我没关系", scoresA: { Skepticism:1.5, selfish: 1.5 , cynical: 1 } },
         { text: "F 有趣，看看热闹", scoresB: { observer: 3 } }
       ]
     },
