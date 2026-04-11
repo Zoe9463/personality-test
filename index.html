@@ -271,19 +271,19 @@ const typeMapB = {
       title: "2. 别人占了你一点小便宜，你通常：",
       options: [
         { text: "A 只要不过分就算了", scoresA: { Magnanimous: 3, detached: 1 } },
-        { text: "B 会直接说清楚，不想憋着", scoresA: { honest: 3, hero: 1 } },
-        { text: "C 有点不舒服，但还是不想撕破脸", scoresA: { coward: 3, agreeable: 1} },
-        { text: "D 会记着，下次找机会还回去", scoresA: { jealous: 3, cynical: 1 } },
-        { text: "E 直接喷他，敢欺负到我头上的人还没出生", scoresA: { rebellious: 3, selfish: 1 } }
+        { text: "B 会直接说清楚，不想憋着", scoresA: { honest: 2, hero: 1.8 ,proud: 1.2 } },
+        { text: "C 有点不舒服，但还是不想撕破脸", scoresA: { agreeable: 1.7, coward: 1.3, sensitive: 1.0 } },
+        { text: "D 会记着，下次找机会还回去", scoresA: { vengeful: 1.8, cynical: 1.2, petty: 1.0 } },
+        { text: "E 直接喷他，敢欺负到我头上的人还没出生", scoresA: { proud: 1.7, rebellious: 1.3, powerOriented: 1.0 } }
       ]
     },
     {
-      title: "3. 别人夸夸其谈(确实在装)时，你更容易：",
+      title: "3. 同事夸夸其谈(确实在装)时，你更容易：",
       options: [
-        { text: "A 心里翻白眼，觉得很装", scoresA: { proud: 2, rebellious: 2 } },
-        { text: "B 表面配合，懒得拆穿", scoresA: { detached: 2, Magnanimous: 2 } },
-        { text: "C 真诚回应，觉得人家可能也只是想表达", scoresA: { naive: 3 } },
-        { text: "D 有点不舒服，觉得他凭什么这么显摆", scoresA: { proud: 2 ,rebellious: 1, jealous: 1 } }
+        { text: "A “你装你X呢？”", scoresA: { proud: 1, rebellious: 1.4, fakeSmart: 1.6 } },
+        { text: "B 表面配合，懒得拆穿", scoresA: { detached: 1.7, social: 1.2,Magnanimous: 1.1 } },
+        { text: "C 表面配合，心里不爽", scoresA: { agreeable: 1.5, cynical: 1.3, sensitive: 1.2 } },
+        { text: "D 真诚回应，觉得人家可能也只是想表达", scoresA: {  naive: 3 } }
       ]
     },
     {
