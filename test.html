@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>人类模型测试</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f5f5;
+      color: #222;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 24px 16px 60px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 24px;
+      margin-bottom: 8px;
+      font-size: 34px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #888;
+      margin-bottom: 28px;
+      font-size: 18px;
+    }
+
+    .notice {
+      background: #ebebeb;
+      border-left: 5px solid #aaa;
+      padding: 18px;
+      margin-bottom: 28px;
+      color: #444;
+      border-radius: 4px;
+    }
+
+    .question-box {
+      background: #fff;
+      padding: 22px;
+      border-radius: 14px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      margin-bottom: 18px;
+    }
+
+    .question-number {
+      color: #888;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .question-title {
+      font-size: 26px;
+      margin-bottom: 18px;
+    }
+
+    .option-item {
+      display: block;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      background: #fff;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .option-item:hover {
+      background: #f8f8f8;
+      border-color: #999;
+    }
+
+    .option-item input {
+      margin-right: 10px;
+      transform: scale(1.1);
+    }
+
+    .submit-wrap {
+      text-align: center;
+      margin-top: 28px;
+    }
+
+    .submit-btn,
+    .restart-btn {
+      padding: 14px 24px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      background: #222;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .result-box {
+      display: none;
+      background: #fff;
+      padding: 24px;
+      border-radius: 14px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      margin-top: 28px;
+      white-space: pre-line;
+    }
+
+    .result-title {
+      font-size: 30px;
+      margin-bottom: 16px;
+    }
+
+    .error {
+      color: #c62828;
+      text-align: center;
+      margin-top: 14px;
+      font-size: 16px;
+    }
+
+    .footer-space {
+      height: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>人类模型测试 v1.0</h1>
+    <div class="subtitle">共 35 题 · 不正经问卷</div>
+
+    <div class="notice">
+     Hey, take it easy.
+    </div>
+
+    <div id="quizForm"></div>
+
+    <div class="submit-wrap">
+      <button class="submit-btn" onclick="submitQuiz()">提交测试</button>
+      <div id="errorText" class="error"></div>
+    </div>
+
+    <div id="resultBox" class="result-box">
+      <div class="result-title">测试结果</div>
+      <div id="resultText"></div>
+      <br />
+      <button class="restart-btn" onclick="resetQuiz()">重新填写</button>
+    </div>
+
+    <div class="footer-space"></div>
+  </div>
+
+  <script>
+// ===== A模组（性格倾向）=====
+  const typeMapA = {
+    hero: "侠肝义胆的",   //愤青
+    detached: "超脱俗世的",  //出家
+    agreeable: "讨好人格的", //讨好
+    naive: "天真烂漫的",  //傻宝
+    Magnanimous: "大智若愚的",  //大气
+    honest: "坦荡真诚的",  //实在
+    social: "圆滑世故的",  //油滑
+
+    sensitive: "敏感脆弱的",  //矫情
+    fakeSmart: "自作聪明的", //装逼
+    cynical: "愤世嫉俗的",  //酸性
+    selfish: "自私自利的",  //自私
+    coward: "懦弱退缩的",  //懦弱
+    jealous: "心胸狭隘的",  //妒忌
+    proud: "孤高自持的",  //高傲
+    rebellious: "桀骜不驯的",  //叛逆
+    competitive: "攀高比低的",  //势利
+    petty: "锱铢必较的",  //抠搜
+    powerOriented: "恐弱慕强的", //恐弱
+    Skepticism: "怀疑论的",//质疑
+    vengeful:"心怀怨怼的"//报复
+  };
+// ===== B模组（人格角色）=====
+const typeMapB = {
+  parent: "家长",
+  intuitive: "灵觉者",
+  guide: "引路人",
+  observer: "观察者",
+  strategist: "操盘手",
+  artist: "艺术家",
+  crowd: "乌合之众",
+  leader: "领导者",
+  opportunist: "投机者",
+  rebel: "盗火者",
+  guardian: "守夜人",
+  pretender: "凡尔赛",
+  mediator: "和事佬",
+  ambitious: "野心家",
+  hypocrite: "伪君子",
+  martyr: "殉道者",
+  narcissist: "自恋者",
+  idealist: "理想家",
+  vampire: "吸血鬼",
+  traveler: "旅人",
+  hunter: "猎人",
+  loveBrain: "恋爱脑",
+  lustBrain: "性缘脑",
+  mindPlayer: "弄心者"
+};
+
+
+  const typeDescriptionsA = {
+    hero: "你有明显的是非感和保护欲，面对不公或弱者时更容易生出行动冲动，也倾向把“该不该”看得比“值不值”更重。",
+    detached: "你和俗世情绪之间天然有一点距离，很多人在意的得失并不容易真正绑住你，你更容易抽离、旁观、看淡。",
+    agreeable: "你更倾向于维持关系表面的和气，不愿意轻易得罪人，常常会把冲突往后放，把圆场放在前面。",
+    naive: "你身上有很强的学生气和未经驯化的轻信，容易先用善意理解别人，也容易把世界想得比它实际更简单。",
+    Magnanimous: "你看起来不争不抢、甚至有点钝，但并不是真的不明白，而是很多事你懒得计较，知道轻重，也知道让渡。",
+    honest: "你很在意真实本身，不喜欢拐弯抹角，更不擅长用虚假的姿态经营自己，倾向于坦率地把自己放在关系里。",
+    sensitive: "你对外界反应、评价、气氛和细节都更容易过度感受，想得多、内耗多，也更容易把很多事落到自己身上。",
+    fakeSmart: "你很在意显得自己是懂的、清醒的、聪明的，但有时这种“想显得懂”会跑在真正的理解前面。",
+    cynical: "你对很多秩序、公平、成功叙事都有天然的不信任，常常会先看到背后的利益、虚伪和不对劲。",
+    jealous: "你对比较、资源差距和他人优越感更敏感，容易被刺激到，也更容易在关系里生出防备、妒意和不服。",
+    social: "你对人情世故有一定敏感度，知道在不同场合该说什么话、用什么态度维持关系。你不一定虚伪，但很少让自己处在完全没有缓冲的位置，更倾向于通过分寸和表达来让局面保持在可控范围内。",
+    selfish: "你在很多选择里会优先考虑自己的利益与感受，对他人的需求和情绪不会天然放在第一位。你并不一定冷酷，但很清楚资源有限，也不太愿意为别人承担不必要的代价。",
+    coward: "你并不缺乏判断力，很多事情你心里是明白的，但在真正需要承担风险、表达立场或正面冲突时，你更容易选择退一步。你习惯先规避代价，再考虑对错，很多时候不是不知道，而是不敢。",
+    proud: "你对自我有较强的边界感和尊严感，不太愿意轻易低头或依附他人。你更倾向于独立地维持自己的位置，即使在不占优势的情况下，也会下意识地保持一种克制和自持。",
+    rebellious: "你对规则、权威和既定秩序有天然的抵触或不信任感，不太愿意按照别人设定的路径行事。你更倾向于按自己的方式做选择，即使这意味着承担更多不确定性或与主流产生摩擦。",
+    competitive: "你对比较和位置非常敏感，很难完全忽视他人与自己的差距。你会下意识地评估高低、强弱与资源分配，并在这种比较中不断调整自己的状态，既可能成为动力，也可能带来压力。",
+    petty: "你对得失和细节的感受比较具体且不容易放过，小到一句话、一点资源分配，都可能被你记在心里。你不一定恶意，但很难真正做到一笑而过，更倾向于在细微处较真。",
+    powerOriented: "你对强弱关系非常敏感，更容易向强者靠拢、对权力或资源集中者产生认同，同时在面对弱势一方时会本能地拉开距离。你的判断标准往往不是单纯的对错，而是“谁更强、谁更有价值。",
+    Skepticism: "你不会轻易接受表面的说法、情绪或立场，遇到事情时更习惯先打个问号，想确认背后有没有别的动机、隐情或漏洞。你并不一定是否定一切，但很难立刻相信“看到的就是全部”，往往会先观察、拆解，再决定是否认同。",
+    vengeful: "你对伤害、冒犯和亏欠有较强的记忆感，不太容易真正翻篇。别人踩到你的边界后，你不一定当场发作，但心里往往会记下这笔账，并倾向于在合适的时候讨回、公平清算，甚至加倍奉还。你在意的未必只是结果本身，更是在意“不能就这么算了”。"
+  };
+    
+  const typeDescriptionsB = {
+    parent: "你更容易成为他人依赖的对象，习惯承担责任，在关系中常常不自觉地站在照顾与支撑的位置。",
+    intuitive: "你对情绪、氛围和潜在变化极为敏感，很多判断不是靠逻辑，而是一种快速而直接的直觉。",
+    guide: "你习惯总结经验、输出观点，更容易在关系中扮演老师、引导者或“解释世界”的角色。",
+    observer: "你习惯站在局外观察，保持抽离和距离感，不轻易完全代入某个立场，带一点旁观与虚无气质。",
+    strategist: "你享受操盘事情、推动局面发展的过程，更在意事情如何运转、如何被设计和实现。",
+    artist: "你对审美、情绪和浪漫体验有很高感受力，更容易沉浸在表达、自我感受和‘玫瑰人生’之中。",
+    crowd: "你容易受环境和群体影响，立场不够固定，倾向顺着局势或多数人的方向移动。",
+    leader: "你具备一定的大局观和承担能力，在关键时刻更容易站出来组织、决策和扛下责任。",
+    opportunist: "你更倾向抓住机会，而不是坚持原则，擅长在变化中找到对自己最有利的位置。",
+    rebel: "你不会天然从既有立场或身份出发，更容易跳出规则甚至背离原有阵营，用自己的判断去看世界。",
+    guardian: "你更容易为了他人或某种价值持续付出，带有明显的守护、保护甚至牺牲倾向。",
+    pretender: "你对优越感和展示感很敏感，无论是自己还是他人，都容易卷入一种微妙的‘装与被装’的关系中。",
+    mediator: "你倾向于缓和冲突、维持关系表面的和气，更在意局面是否能过得去，而不是非要分清对错。",
+    ambitious: "你对更高位置和更大资源有明显渴望，但有时行动和承担能力未必完全匹配这种野心。",
+    hypocrite: "你对道德和规则有选择性使用的倾向，容易用它约束他人，却对自己保留灵活空间。",
+    martyr: "你对某种理念、真理或价值有执着，愿意为之坚持甚至付出代价，不轻易妥协。",
+    narcissist: "你更容易把关注点放在自身感受与价值上，很多判断围绕“我”展开，自我感较强。",
+    idealist: "你倾向构建理想图景和美好蓝图，但在现实执行层面可能动力不足或落地较弱。",
+    vampire: "你更容易依附他人获取资源、情绪或支持，在关系中带有一定消耗性，像填不满的黑洞。",
+    traveler: "你对稳定归属没有强依赖，更容易在不同环境、关系和状态中游走，带有流动感。",
+    hunter: "你习惯把世界看作资源竞争场，对强弱和位置极其敏感，处处在比较、评估和争夺。",
+    loveBrain: "你在关系中容易以爱情为中心，很多判断和行为会不自觉被情感牵引。",
+    lustBrain: "你对性吸引和性关系更敏感，很多反应会受到欲望和生理驱动的影响。",
+    mindPlayer: "你对人的情绪、欲望、脆弱点和反应很敏感，不只是看懂，还会忍不住去试探、拨动甚至操弄。你享受影响他人心理状态的感觉，比起单纯完成事情，你更在意人是否被你拿捏。",
+};
+
+  const questions = [
+    {
+      "title": "1. 如果你意外获得了一种能听见他人心声的能力，但只能持续一小时，你会：",
+    "options": [
+      { "text": "A 冲到老板办公室听听真实的评价，为晋升做准备", "scoresA": { "powerOriented": 3, "competitive": 2 } },
+      { "text": "B 觉得这太打扰他人隐私，找个安静的地方冥想等它失效", "scoresA": { "detached": 3, "Magnanimous": 1 } },
+      { "text": "C 去听喜欢的人的心声，确认她是不是也在意我", "scoresA": { "sensitive": 2, "coward": 1.5, "jealous": 1 } },
+      { "text": "D 在社交场合游走，捕捉每个人的喜好并完美接话", "scoresA": { "social": 3, "agreeable": 2 } },
+      { "text": "E 冷笑着观察那些满口仁义的人心里在想什么龌龊事", "scoresA": { "cynical": 2.5, "Skepticism": 2, "fakeSmart": 1.5 } }
+    ]
+  },
+  {
+    "title": "2. 好友转发了一篇漏洞百出的深度好文并大加赞赏，你会：",
+    "options": [
+      { "text": "A 直接在评论区列出逻辑谬误，指出其常识错误", "scoresA": { "honest": 2.5, "proud": 2, "hero": 1 } },
+      { "text": "B 假装没看到，或者随手点个赞敷衍过去", "scoresA": { "agreeable": 2, "naive": 1 } },
+      { "text": "C 阴阳怪气地评论一句：‘确实，这逻辑很符合当下的流行趋势’", "scoresA": { "cynical": 2.5, "fakeSmart": 2 } },
+      { "text": "D 思考他发这篇文章是不是想暗示我什么，陷入焦虑", "scoresA": { "sensitive": 3, "Skepticism": 1.5 } },
+      { "text": "E 这种低级错误也看？瞬间觉得拉低了自己的圈层社交水准", "scoresA": { "proud": 2.5, "competitive": 2 } }
+    ]
+  },
+  {
+    "title": "3. 在末日避难所里，食物只够支撑到救援，此时有个身体虚弱的人请求分他一份：",
+    "options": [
+      { "text": "A 坚决拒绝，规则就是规则，不能因为同情害死大家", "scoresA": { "selfish": 2.5, "powerOriented": 2, "detached": 1 } },
+      { "text": "B 把自己的口粮分出一半，认为救人命大过天", "scoresA": { "hero": 3, "Magnanimous": 2, "naive": 1.5 } },
+      { "text": "C 观察其他人的反应，如果大家都给我就给", "scoresA": { "agreeable": 2, "coward": 2 } },
+      { "text": "D 分析这人是否有未来的利用价值，再决定救不救", "scoresA": { "competitive": 2.5, "fakeSmart": 1.5 } },
+      { "text": "E 把过期的或者口感最差的那份塞给他", "scoresA": { "petty": 2.5, "vengeful": 1.5 } }
+    ]
+  },
+  {
+    "title": "4. 你的竞争对手在重要展示会上突然电脑死机，大家都在看笑话：",
+    "options": [
+      { "text": "A 挺身而出借他电脑，并帮他平息场面", "scoresA": { "hero": 2.5, "Magnanimous": 2.5 } },
+      { "text": "B 心里暗爽：‘苍天有眼，看你平时那个装相’", "scoresA": { "jealous": 2.5, "vengeful": 2, "cynical": 1 } },
+      { "text": "C 面带微笑地关切，内心其实毫无波澜", "scoresA": { "social": 2.5, "fakeSmart": 1.5 } },
+      { "text": "D 趁机在座位下小声吐槽他的准备工作不够细致", "scoresA": { "petty": 2, "honest": 1.5 } },
+      { "text": "E 视若无睹，继续低头玩手机，与我无关", "scoresA": { "detached": 3 } }
+    ]
+  },
+  {
+    "title": "5. 某位大佬在酒会上夸夸其谈，内容明显在“装逼”，你会：",
+    "options": [
+      { "text": "A 虽然不适，但依然点头附和，并寻找机会精准赞美", "scoresA": { "social": 2.5, "agreeable": 2, "competitive": 1.5 } },
+      { "text": "B 忍不住当众拆穿他的牛皮，气氛瞬间降至冰点", "scoresA": { "honest": 2.5, "rebellious": 2.5 } },
+      { "text": "C 比他更能装，用更高级的术语把他反压下去", "scoresA": { "fakeSmart": 3, "proud": 2, "powerOriented": 1.5 } },
+      { "text": "D 默默离开，找个角落喝酒看星星", "scoresA": { "detached": 3, "Magnanimous": 1 } },
+      { "text": "E 觉得自己太弱了，连装逼的资本都没有，感到自卑", "scoresA": { "powerOriented": 2.5, "sensitive": 2 } }
+    ]
+  },
+  {
+    "title": "6. 去餐馆吃饭，服务员不小心把汤洒在你的名牌衣服上：",
+    "options": [
+      { "text": "A 算了，看他打工也不容易，摆摆手让他走", "scoresA": { "Magnanimous": 3, "naive": 1 } },
+      { "text": "B 坚持要经理出来赔偿，哪怕是一点污渍也要按价算", "scoresA": { "petty": 2.5, "honest": 2 } },
+      { "text": "C 嘴上说没关系，但要求对方送一份免费甜点补偿", "scoresA": { "social": 2, "vengeful": 1.5 } },
+      { "text": "D 还没等对方道歉就吓得先说‘没关系’，怕冲突", "scoresA": { "coward": 3, "agreeable": 2 } },
+      { "text": "E 觉得这人是故意的，要把这种愤怒发泄在差评里", "scoresA": { "vengeful": 3, "Skepticism": 1.5 } }
+    ]
+  },
+  {
+    "title": "7. 你在一个重要的匿名投票中，决定权在你手里，你会：",
+    "options": [
+      { "text": "A 选最有实力的，哪怕我不喜欢他", "scoresA": { "hero": 2, "honest": 2.5 } },
+      { "text": "B 选平时对我最友好的，或者我欠他人情的", "scoresA": { "agreeable": 2, "social": 1.5 } },
+      { "text": "C 选那个最弱的，这样未来对我没有威胁", "scoresA": { "powerOriented": 2.5, "selfish": 2 } },
+      { "text": "D 谁也不选，弃权，这破事跟我没关系", "scoresA": { "detached": 3 } },
+      { "text": "E 选那个曾得罪过我的人的对手", "scoresA": { "vengeful": 3, "jealous": 2 } }
+    ]
+  },
+  {
+    "title": "8. 关于攒钱和消费，你的真实看法是：",
+    "options": [
+      { "text": "A 每一分钱都要花在刀刃上，能省则省", "scoresA": { "petty": 3 } },
+      { "text": "B 钱是挣出来的不是省出来的，对朋友很大方", "scoresA": { "Magnanimous": 2.5, "social": 1.5 } },
+      { "text": "C 买很多昂贵的东西证明自己过得很好", "scoresA": { "proud": 2, "fakeSmart": 2, "competitive": 1.5 } },
+      { "text": "D 觉得金钱是万恶之源，够生活就行，不追求财富", "scoresA": { "detached": 2.5, "naive": 2 } },
+      { "text": "E 随时担心破产，总觉得银行要坑我的钱", "scoresA": { "Skepticism": 3, "coward": 1.5 } }
+    ]
+  },
+  {
+    "title": "9. 当你被推举为一个临时团队的负责人时：",
+    "options": [
+      { "text": "A 顺势而为，利用职权让大家各司其职，掌控全局", "scoresA": { "powerOriented": 3, "competitive": 2 } },
+      { "text": "B 感到压力巨大，很怕决策失误被大家责怪", "scoresA": { "coward": 2.5, "sensitive": 2 } },
+      { "text": "C 谁爱干谁干，我只想做一个准时下班的隐形人", "scoresA": { "detached": 3, "selfish": 1.5 } },
+      { "text": "D 努力平衡每个人的情绪，确保没有人不开心", "scoresA": { "agreeable": 3, "social": 2 } },
+      { "text": "E 怀疑大家推选我是为了让我背锅", "scoresA": { "Skepticism": 3, "cynical": 2 } }
+    ]
+  },
+  {
+    "title": "10. 如果你发现一个同事在偷偷挪用公款，你会：",
+    "options": [
+      { "text": "A 直接向高层举报，维护正义", "scoresA": { "hero": 2.5, "honest": 2.5 } },
+      { "text": "B 找他谈话，劝他自首，但不会主动揭发", "scoresA": { "naive": 2.5, "Magnanimous": 2 } },
+      { "text": "C 收集证据，等一个对他最致命、对我最有利的时机再用", "scoresA": { "competitive": 2.5, "vengeful": 2, "fakeSmart": 1.5 } },
+      { "text": "D 假装不知道，怕被打击报复", "scoresA": { "coward": 3, "selfish": 1.5 } },
+      { "text": "E 觉得这公司本身就坑人，挪用公款也是种‘抗争’", "scoresA": { "rebellious": 3, "cynical": 2 } }
+    ]
+  },
+  {
+    "title": "11. 看到朋友圈里有人发很丧的内容，你的第一反应是：",
+    "options": [
+      { "text": "A 赶紧私聊安慰，很担心对方的状态", "scoresA": { "agreeable": 2, "sensitive": 2.5, "naive": 1 } },
+      { "text": "B 觉得又在博关注，无视并划走", "scoresA": { "detached": 2.5, "cynical": 2 } },
+      { "text": "C 觉得自己比他惨多了，我都没发，他凭什么", "scoresA": { "jealous": 2.5, "selfish": 1.5 } },
+      { "text": "D 评论一句‘加油’，维持社交礼貌", "scoresA": { "social": 2.5, "fakeSmart": 1 } },
+      { "text": "E 分析他发这段话的受众是谁，是不是发给某人看的", "scoresA": { "Skepticism": 2.5, "fakeSmart": 2 } }
+    ]
+  },
+  {
+    "title": "12. 对于“世界是不公平的”这句话，你怎么看？",
+    "options": [
+      { "text": "A 没错，所以我必须成为掌握权力的那一端", "scoresA": { "powerOriented": 3, "competitive": 2 } },
+      { "text": "B 虽然不公，但我依然会坚持自己的正直", "scoresA": { "hero": 3, "honest": 2 } },
+      { "text": "C 既然不公，那我也没必要遵守所谓的道德底线", "scoresA": { "rebellious": 2.5, "selfish": 2, "cynical": 2 } },
+      { "text": "D 确实，出身决定一切，普通人再努力也没用", "scoresA": { "cynical": 3, "coward": 1.5 } },
+      { "text": "E 这种深刻的问题太复杂了，我只想过好今天", "scoresA": { "detached": 2.5, "naive": 2 } }
+    ]
+  },
+  {
+    "title": "13. 另一半翻看你的手机记录，你：",
+    "options": [
+      { "text": "A 大发雷霆，觉得尊严受到了严重挑衅", "scoresA": { "proud": 3, "rebellious": 2 } },
+      { "text": "B 随他翻，反正我问心无愧", "scoresA": { "honest": 3, "Magnanimous": 2 } },
+      { "text": "C 表面配合，但事后会悄悄改掉所有密码", "scoresA": { "Skepticism": 2.5, "fakeSmart": 2, "coward": 1 } },
+      { "text": "D 觉得这是对方爱我的表现，甚至感到一点甜蜜", "scoresA": { "naive": 3, "sensitive": 2 } },
+      { "text": "E 既然你翻我的，那我也要翻你的，甚至查得更细", "scoresA": { "vengeful": 2.5, "jealous": 2.5, "petty": 1.5 } }
+    ]
+  },
+  {
+    "title": "14. 在团队合作中，有个“猪队友”拖了后腿导致奖金减半：",
+    "options": [
+      { "text": "A 虽然生气，但会安慰他下次努力", "scoresA": { "Magnanimous": 3, "agreeable": 2 } },
+      { "text": "B 公事公办，在复盘会上指名道姓让他承担责任", "scoresA": { "honest": 3, "proud": 1.5 } },
+      { "text": "C 表面说没关系，私下里联合其他人排挤他", "scoresA": { "social": 2, "vengeful": 2.5, "coward": 1.5 } },
+      { "text": "D 既然奖金少了，那我接下来的工作量也要减半才划算", "scoresA": { "petty": 3, "selfish": 2 } },
+      { "text": "E 早就预料到会这样，这就是命", "scoresA": { "detached": 3, "cynical": 1 } }
+    ]
+  },
+  {
+    "title": "15. 面对比你成功很多的老同学，你会：",
+    "options": [
+      { "text": "A 真心为他感到高兴，并向他请教经验", "scoresA": { "Magnanimous": 2.5, "honest": 2 } },
+      { "text": "B 觉得他肯定是有某种不可告人的背景或潜规则", "scoresA": { "Skepticism": 3, "cynical": 2, "jealous": 1.5 } },
+      { "text": "C 夸张地称赞他，并希望能借此拓展自己的人脉", "scoresA": { "social": 3, "competitive": 2.5 } },
+      { "text": "D 尽量躲着他，怕被对方看不起", "scoresA": { "proud": 2, "coward": 2, "sensitive": 2 } },
+      { "text": "E 拿出一件更牛的事迹（哪怕是编的）来暗示自己也不差", "scoresA": { "fakeSmart": 3, "proud": 2, "competitive": 1 } }
+    ]
+  },
+  {
+    "title": "16. 假如你拥有改写别人一段记忆的机会，你会：",
+    "options": [
+      { "text": "A 让伤害过我的人永远记得那种羞愧感", "scoresA": { "vengeful": 3, "powerOriented": 2 } },
+      { "text": "B 抹去深爱的人痛苦的记忆，只留美好", "scoresA": { "hero": 2, "naive": 2, "agreeable": 1.5 } },
+      { "text": "C 把我欠别人钱或人情的记忆给抹掉", "scoresA": { "selfish": 3, "petty": 2 } },
+      { "text": "D 绝对不动这种禁忌，人因记忆而真实", "scoresA": { "honest": 3, "detached": 2 } },
+      { "text": "E 给自己改一段更牛的履历记忆，增加自信", "scoresA": { "fakeSmart": 3, "proud": 1.5 } }
+    ]
+  },
+  {
+    "title": "17. 当你在公共场合看到有人在做极度尴尬的事（如裤子穿反了）：",
+    "options": [
+      { "text": "A 赶紧走过去小声提醒，帮他化解尴尬", "scoresA": { "hero": 2.5, "agreeable": 1.5 } },
+      { "text": "B 拿出手机拍下来发给朋友嘲笑", "scoresA": { "petty": 2, "cynical": 2.5, "selfish": 1.5 } },
+      { "text": "C 觉得这事跟我没关系，完全不关注", "scoresA": { "detached": 3 } },
+      { "text": "D 看着他觉得替他尴尬，脚趾扣地，比他还局促", "scoresA": { "sensitive": 3, "naive": 1 } },
+      { "text": "E 故意在旁边很大声地谈论相关话题，暗示他", "scoresA": { "social": 2, "proud": 2 } }
+    ]
+  },
+  {
+    "title": "18. 对于“规则”的态度，你倾向于：",
+    "options": [
+      { "text": "A 规则是用来保护弱者的，必须死守", "scoresA": { "hero": 2, "honest": 2.5, "coward": 1 } },
+      { "text": "B 规则是用来打破的，强者制定规则", "scoresA": { "powerOriented": 3, "rebellious": 2.5 } },
+      { "text": "C 灵活运用规则，寻找对自己最有利的漏洞", "scoresA": { "fakeSmart": 2.5, "selfish": 2, "competitive": 1.5 } },
+      { "text": "D 只要不被抓到，规则就是不存在的", "scoresA": { "rebellious": 2.5, "selfish": 2 } },
+      { "text": "E 虽然觉得规则很蠢，但还是会顺从大家执行", "scoresA": { "agreeable": 2.5, "coward": 2 } }
+    ]
+  },
+  {
+    "title": "19. 如果你被误认为是一个英雄，但实际上你并没做什么：",
+    "options": [
+      { "text": "A 立即澄清事实，受之有愧", "scoresA": { "honest": 3, "proud": 1.5 } },
+      { "text": "B 顺水推舟接受赞美，反正也没害人", "scoresA": { "social": 2.5, "fakeSmart": 2, "selfish": 1.5 } },
+      { "text": "C 利用这个身份去获取一些现实的好处", "scoresA": { "competitive": 3, "powerOriented": 2 } },
+      { "text": "D 感到巨大的恐慌，生怕哪天被拆穿", "scoresA": { "coward": 3, "sensitive": 2 } },
+      { "text": "E 觉得这世界真是荒诞，什么都能被神话", "scoresA": { "cynical": 3, "detached": 2 } }
+    ]
+  },
+  {
+    "title": "20. 当你深夜独自走在路上，看到一个奇怪的影子：",
+    "options": [
+      { "text": "A 第一反应是鬼或者坏人，吓得拔腿就跑", "scoresA": { "coward": 3, "naive": 1 } },
+      { "text": "B 拿出防身工具，冷静观察四周，随时准备反击", "scoresA": { "hero": 2, "Skepticism": 2, "powerOriented": 1.5 } },
+      { "text": "C 觉得自己肯定看错了，世界是物质的，继续走", "scoresA": { "detached": 3, "honest": 1.5 } },
+      { "text": "D 想象出一百种恐怖片情节，把自己吓哭", "scoresA": { "sensitive": 3, "naive": 1.5 } },
+      { "text": "E 既然我不好过，也要吓走我后面的人", "scoresA": { "vengeful": 2, "petty": 2.5 } }
+    ]
+  }
+]
+
+  function renderQuestions() {
+    const quizForm = document.getElementById('quizForm');
+    quizForm.innerHTML = '';
+
+    questions.forEach((question, index) => {
+      const questionBox = document.createElement('div');
+      questionBox.className = 'question-box';
+
+      let optionsHtml = '';
+      question.options.forEach((option, optionIndex) => {
+        optionsHtml += `
+          <label class="option-item">
+            <input type="radio" name="question-${index}" value="${optionIndex}">
+            ${option.text}
+          </label>
+        `;
+      });
+
+      questionBox.innerHTML = `
+        <div class="question-number">第 ${index + 1} 题 · 维度已隐藏</div>
+        <div class="question-title">${question.title}</div>
+        <div>${optionsHtml}</div>
+      `;
+
+      quizForm.appendChild(questionBox);
+    });
+  }
+
+  function submitQuiz() {
+    const errorText = document.getElementById('errorText');
+    errorText.innerText = '';
+  // ===== A模组总分（性格倾向）=====
+  const totalScoresA = {
+      hero: 0,
+      detached: 0,
+      agreeable: 0,
+      naive: 0,
+      Magnanimous: 0,
+      honest: 0,
+      social: 0,
+      sensitive: 0,
+      fakeSmart: 0,
+      cynical: 0,
+      selfish: 0,
+      coward: 0,
+      jealous: 0,
+      proud: 0,
+      rebellious: 0,
+      competitive: 0,
+      petty: 0,
+      powerOriented: 0
+    };
+
+  // ===== B模组总分（人格角色）=====
+  const totalScoresB = {
+      parent: 0,
+      intuitive: 0,
+      guide: 0,
+      observer: 0,
+      strategist: 0,
+      artist: 0,
+      crowd: 0,
+      leader: 0,
+      opportunist: 0,
+      rebel: 0,
+      guardian: 0,
+      pretender: 0,
+      mediator: 0,
+      ambitious: 0,
+      hypocrite: 0,
+      martyr: 0,
+      narcissist: 0,
+      idealist: 0,
+      vampire: 0,
+      traveler: 0,
+      hunter: 0,
+      loveBrain: 0,
+      lustBrain: 0,
+      mindPlayer: 0
+};
+
+  const answerLabels = [];
+
+  for (let i = 0; i < questions.length; i++) {
+    const checked = document.querySelector(`input[name="question-${i}"]:checked`);
+    if (!checked) {
+      errorText.innerText = `你还有第 ${i + 1} 题没选。`;
+      return;
+    }
+
+    const optionIndex = Number(checked.value);
+    const selectedOption = questions[i].options[optionIndex];
+    answerLabels.push(String.fromCharCode(65 + optionIndex));
+
+    // ===== A模组加分 =====
+    for (const [typeKey, score] of Object.entries(selectedOption.scoresA || {})) {
+      if (totalScoresA.hasOwnProperty(typeKey)) {
+        totalScoresA[typeKey] += score;
+      }
+    }
+
+    // ===== B模组加分 =====
+    for (const [typeKey, score] of Object.entries(selectedOption.scoresB || {})) {
+      if (totalScoresB.hasOwnProperty(typeKey)) {
+        totalScoresB[typeKey] += score;
+      }
+    }
+  }
+
+  // ===== A模组排序，取第一名 =====
+  const sortedA = Object.entries(totalScoresA).sort((a, b) => b[1] - a[1]);
+  const topA = sortedA[0][0];
+
+  // ===== B模组排序，取第一名 =====
+  const sortedB = Object.entries(totalScoresB).sort((a, b) => b[1] - a[1]);
+  const topB = sortedB[0][0];
+
+  // ===== A + B 拼接 =====
+  const combinedType = `${typeMapA[topA]}${typeMapB[topB]}`;
+
+  const result = `你的类型是【${combinedType}】
+
+你的性格倾向：${typeMapA[topA]}
+${typeDescriptionsA[topA]}
+
+你的人格特质是：${typeMapB[topB]}
+${typeDescriptionsB[topB]}`;
+
+  document.getElementById('resultBox').style.display = 'block';
+  document.getElementById('resultText').innerText =
+    `你的作答：${answerLabels.join(' / ')}\n\n${result}`;
+
+  document.getElementById('resultBox').scrollIntoView({ behavior: 'smooth' });
+}
+
+  function resetQuiz() {
+    const radios = document.querySelectorAll('input[type="radio"]');
+    radios.forEach(radio => {
+      radio.checked = false;
+    });
+
+    document.getElementById('errorText').innerText = '';
+    document.getElementById('resultBox').style.display = 'none';
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  renderQuestions();
+
+</script>
+
+</body>
+</html>
